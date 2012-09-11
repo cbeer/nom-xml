@@ -1,10 +1,19 @@
 module Nom::Decorators::Terminology
   def self.extended klass
 
-    klass.add_terminology_accessors!
+    klass.add_terminology_methods!
   end
 
-  def add_terminology_accessors!
-    document.add_terminology_accessors(self)
+  def terms
+    @terms ||= []
   end
+
+  def terms= terms
+    @terms = terms
+  end
+
+  def add_terminology_methods!
+    document.add_terminology_methods(self)
+  end
+
 end

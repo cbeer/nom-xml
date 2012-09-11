@@ -2,6 +2,7 @@ require 'nokogiri'
 
 module Nom
   require 'nom/version'
+  require 'nom/terminology'
   require 'nom/decorators'
 
   require 'nom/nokogiri_extension'
