@@ -9,5 +9,13 @@ module Nom
 
       self
     end
+
+    def add_terminology_accessors node
+      class <<node
+        def a
+          "!!!"
+        end
+      end
+    end
   end
 end
