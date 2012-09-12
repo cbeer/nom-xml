@@ -16,42 +16,21 @@ module Nom
     end
 
     def set_terminology &block
-      remove_terminology_methods
       @terminology = Nom::XML::Terminology.new &block
-      build_terminology_methods
     end
 
     def terminology
-      @terminology ||=  begin
-                          t = Nom::XML::Terminology.new
-                          build_terminology_methods
-                          t
-                        end
+      @terminology ||= Nom::XML::Terminology.new
     end
 
-    def remove_terminology_methods
-    end
-
-    def build_terminology_methods
-    end
-
+    ##
+    # Add terminology accessors for querying child terms
+    # @param [Nokogiri::XML::Node] 
     def add_terminology_methods node
-      return unless node.respond_to? :parent
-
-      if node == node.document.root
-        node.terms = node.document.terminology.terms
+      if node == node.document.root or node.is_a? Nokogiri::XML::Document
+        node.terms = root_terms(node)
       elsif not node.parent.terms.empty?
-        h = {}
-        t = node.parent.terms.select do |k,term|
-          node.parent.xpath(term.local_xpath).include? node
-        end
-        t.each do |k,v|
-          v.terms.each do |k1, v1|
-            h[k1] = v1
-          end
-        end
-
-        node.terms = h
+        node.terms = child_terms(node)
       end
 
       node.terms.each do |k, t|
@@ -60,6 +39,32 @@ module Nom
             self.xpath(%{#{t.local_xpath}})
           end
         eos
+      end
+    end
+
+    private
+
+    def root_terms node
+      node.document.terminology.terms
+    end
+
+    def child_terms node
+      h = {}
+
+      terms_for_node(node).each do |k,v|
+        v.terms.each do |k1, v1|
+          h[k1] = v1
+        end
+      end
+
+      h
+    end
+
+    ##
+    #find this node in the terminology
+    def terms_for_node node
+      node.parent.terms.select do |k,term|
+        node.parent.xpath(term.local_xpath).include? node
       end
     end
   end

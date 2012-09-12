@@ -15,5 +15,4 @@ module Nom::Decorators::Terminology
   def add_terminology_methods!
     document.add_terminology_methods(self)
   end
-
 end
