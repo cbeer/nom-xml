@@ -46,7 +46,7 @@ module Nom::XML
     end
 
     def local_xpath
-      options[:path] || name
+      (options[:path] || name).to_s
     end
     
     def method_missing method, *args, &block 
@@ -101,7 +101,7 @@ module Nom::XML
     end
 
     def local_xpath
-      options[:path] || ref.local_xpath
+      (options[:path] || ref.local_xpath).to_s
     end
 
     def method_missing *args, &block
