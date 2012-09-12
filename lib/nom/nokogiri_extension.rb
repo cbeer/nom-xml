@@ -7,6 +7,11 @@ module Nom
         decorate!
       end
 
+      unless decorators(Nokogiri::XML::NodeSet).include? Nom::Decorators::NodeSet
+        decorators(Nokogiri::XML::NodeSet) << Nom::Decorators::NodeSet
+        decorate!
+      end
+
       self
     end
 
@@ -38,7 +43,7 @@ module Nom
       elsif not node.parent.terms.empty?
         h = {}
         t = node.parent.terms.select do |k,term|
-          node.parent.xpath(term.xpath).include? node
+          node.parent.xpath(term.local_xpath).include? node
         end
         t.each do |k,v|
           v.terms.each do |k1, v1|
@@ -52,7 +57,7 @@ module Nom
       node.terms.each do |k, t|
         node.instance_eval <<-eos
           def #{k}
-            self.xpath "#{t.local_xpath}"
+            self.xpath(%{#{t.local_xpath}})
           end
         eos
       end
