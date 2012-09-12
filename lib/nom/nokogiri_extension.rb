@@ -55,11 +55,20 @@ module Nom
       end
 
       node.terms.each do |k, t|
-        node.instance_eval <<-eos
-          def #{k}
-            self.xpath(%{#{t.local_xpath}})
+        (class << node; self; end).send(:define_method, k.to_sym) do
+          result = self.xpath(t.local_xpath)
+          m = t.options[:accessor]
+          case
+          when m.nil?
+            result
+          when m.is_a?(Symbol)
+            result.collect { |r| r.send(m) }
+          when m.is_a?(Proc)
+            result.collect { |r| m.call(r) }
+          else
+            raise "Unknown accessor class: #{m.class}"
           end
-        eos
+        end
       end
     end
   end
