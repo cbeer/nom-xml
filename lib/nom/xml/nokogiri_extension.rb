@@ -29,8 +29,12 @@ module Nom::XML
     # Add terminology accessors for querying child terms
     # @param [Nokogiri::XML::Node] node
     def add_terminology_methods node
+      terms_to_add = node.terms
+      node.ancestors.each do |a|
+        a.terms.each { |k,t| terms_to_add[k] ||= t if t.options[:global] }
+      end
 
-      node.terms.each do |k, t|
+      terms_to_add.each do |k, t|
         (class << node; self; end).send(:define_method, k.to_sym) do |*args|
           options = args.extract_options!
 
