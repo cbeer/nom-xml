@@ -25,7 +25,7 @@ module Nom
 
     ##
     # Add terminology accessors for querying child terms
-    # @param [Nokogiri::XML::Node] 
+    # @param [Nokogiri::XML::Node] node
     def add_terminology_methods node
       if node == node.document.root or node.is_a? Nokogiri::XML::Document
         node.terms = root_terms(node)
