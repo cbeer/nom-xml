@@ -10,6 +10,7 @@ describe "Nutrition" do
          dv.total_fat :path => 'total-fat' do |tf|
            tf.value :path => '.', :accessor => lambda { |node| node.text.to_i }
            tf.units :path => '@units'
+           tf.display_value :path => '.', :accessor => lambda { |node| "#{node.value.first}#{node.units}" }
          end
        end
 
@@ -36,6 +37,7 @@ describe "Nutrition" do
     subject.daily_values.total_fat.text.should == "65"
     subject.daily_values.total_fat.value.should include(65)
     subject.daily_values.total_fat.units.text.should =='g'
+    subject.daily_values.total_fat.display_value.should include('65g')
 
     subject.foods.total_fat.value.inject(:+).should == 117
   end
