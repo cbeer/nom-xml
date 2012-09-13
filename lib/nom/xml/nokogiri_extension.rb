@@ -17,8 +17,13 @@ module Nom::XML
       self
     end
 
-    def set_terminology &block
+    def set_terminology options = {}, &block
+      @terminology_namespaces = options[:namespaces]
       @terminology = Nom::XML::Terminology.new &block
+    end
+
+    def terminology_namespaces
+      @terminology_namespaces ||= {}
     end
 
     def terminology
@@ -47,11 +52,9 @@ module Nom::XML
 
           result = case self
                      when Nokogiri::XML::Document
-                       xpath = "#{self.root.namespace}:#{xpath}" if self.root.namespace and not t.options[:xmlns]
-                       self.root.xpath(xpath)
+                       self.root.xpath(xpath, node.document.terminology_namespaces)
                      else
-                       xpath = "#{self.namespace}:#{xpath}" if self.namespace and not t.options[:xmlns]
-                       result = self.xpath(xpath)
+                       self.xpath(xpath, node.document.terminology_namespaces)
                    end
 
           m = t.options[:accessor]

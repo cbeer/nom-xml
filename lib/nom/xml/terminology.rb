@@ -46,7 +46,11 @@ module Nom::XML
     end
 
     def local_xpath
-      ("#{options[:xmlns]}:" if options[:xmlns]).to_s + (options[:path] || name).to_s
+      ("#{xmlns}:" unless xmlns.blank? ).to_s + (options[:path] || name).to_s
+    end
+
+    def xmlns
+      (options[:xmlns] if options) || (self.parent.xmlns if self.parent)
     end
     
     def method_missing method, *args, &block 

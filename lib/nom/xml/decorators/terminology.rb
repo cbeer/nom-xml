@@ -40,7 +40,7 @@ module Nom::XML::Decorators::Terminology
   #find this self in the terminology
   def collect_terms_for_node
     self.parent.terms.select do |k,term|
-      self.parent.xpath(term.local_xpath).include? self
+      self.parent.xpath(term.local_xpath, self.document.terminology_namespaces).include? self
     end
   end
 
