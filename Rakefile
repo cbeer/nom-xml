@@ -10,6 +10,8 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
+task :default => :ci
+
 require 'rspec/core/rake_task'
 desc "Run specs"
 RSpec::Core::RakeTask.new do |t|
