@@ -1,3 +1,5 @@
+require 'active_support/core_ext/array'
+
 module Nom::XML
   module NokogiriExtension
 
@@ -29,12 +31,22 @@ module Nom::XML
     def add_terminology_methods node
 
       node.terms.each do |k, t|
-        (class << node; self; end).send(:define_method, k.to_sym) do
-          if self.is_a? Nokogiri::XML::Document
-            result = self.root.xpath(t.local_xpath)
-          else
-            result = self.xpath(t.local_xpath)
-          end
+        (class << node; self; end).send(:define_method, k.to_sym) do |*args|
+          options = args.extract_options!
+
+          args += options.map { |key, value| %{#{key}="#{value.gsub(/"/, '\\\"') }"} }
+
+          xpath = t.local_xpath
+
+          xpath += "[#{args.join('][')}]" unless args.empty?
+
+          result = case self
+                     when Nokogiri::XML::Document
+                       self.root.xpath(xpath)
+                     else
+                       result = self.xpath(xpath)
+                   end
+
           m = t.options[:accessor]
           case
           when m.nil?

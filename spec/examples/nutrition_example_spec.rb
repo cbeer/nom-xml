@@ -43,4 +43,9 @@ describe "Nutrition" do
   it "should have food names" do
     subject.foods._name.text.should include("Avocado Dip")
   end
+
+  it "should have xpath selectors" do
+    subject.foods(:name => 'Avocado Dip').total_fat.value.first.should == 11
+    subject.foods('total-fat/text() = 11')._name.text.should == "Avocado Dip"
+  end
 end
