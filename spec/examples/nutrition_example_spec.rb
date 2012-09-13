@@ -6,11 +6,12 @@ describe "Nutrition" do
 
   subject {
      xml.set_terminology do |t|
+       t.unit_value :path => '.', :accessor => lambda { |node| "#{node.text}#{node['units']}" }, :global => true
+
        t.daily_values :path => 'daily-values' do |dv|
          dv.total_fat :path => 'total-fat' do |tf|
            tf.value :path => '.', :accessor => lambda { |node| node.text.to_i }
            tf.units :path => '@units'
-           tf.display_value :path => '.', :accessor => lambda { |node| "#{node.value.first}#{node.units}" }
          end
        end
 
@@ -37,7 +38,6 @@ describe "Nutrition" do
     subject.daily_values.total_fat.text.should == "65"
     subject.daily_values.total_fat.value.should include(65)
     subject.daily_values.total_fat.units.text.should =='g'
-    subject.daily_values.total_fat.display_value.should include('65g')
 
     subject.foods.total_fat.value.inject(:+).should == 117
   end
@@ -49,5 +49,10 @@ describe "Nutrition" do
   it "should have xpath selectors" do
     subject.foods(:name => 'Avocado Dip').total_fat.value.first.should == 11
     subject.foods('total-fat/text() = 11')._name.text.should == "Avocado Dip"
+  end
+
+  it "should have global terms" do
+    subject.daily_values.total_fat.unit_value.should include('65g')
+    subject.foods.first.at('serving').unit_value.should include('29g')
   end
 end
