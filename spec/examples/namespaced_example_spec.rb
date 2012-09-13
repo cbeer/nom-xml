@@ -5,11 +5,17 @@ describe "Namespaces example" do
   let(:xml) { Nokogiri::XML(file) }
 
   subject {
-     xml.set_terminology(:namespaces => { 'html4' => 'http://www.w3.org/TR/html4/'}) do |t|
+     xml.set_terminology(:namespaces => { 'html4' => 'http://www.w3.org/TR/html4/', 'furniture' => "http://www.w3schools.com/furniture"}) do |t|
        t.table :xmlns => 'html4' do |t|
          t.tr do |tr|
            tr.td
          end
+       end
+
+       t.furniture_table :path => 'table', :xmlns => 'furniture' do |f|
+         f._name :path => 'name'
+         f.width
+         f.length
        end
      end
 
@@ -20,5 +26,9 @@ describe "Namespaces example" do
 
   it "should get nodes" do
     subject.table.tr.td.map { |x| x.text }.should include("Apples", "Bananas")
+  end
+
+  it "should get nodes from the other namespace" do
+    subject.furniture_table._name.text.should include("African Coffee Table")
   end
 end
