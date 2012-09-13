@@ -42,12 +42,15 @@ module Nom::XML
 
           xpath = t.local_xpath
 
+
           xpath += "[#{args.join('][')}]" unless args.empty?
 
           result = case self
                      when Nokogiri::XML::Document
+                       xpath = "#{self.root.namespace}:#{xpath}" if self.root.namespace and not t.options[:xmlns]
                        self.root.xpath(xpath)
                      else
+                       xpath = "#{self.namespace}:#{xpath}" if self.namespace and not t.options[:xmlns]
                        result = self.xpath(xpath)
                    end
 
