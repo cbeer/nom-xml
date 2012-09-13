@@ -28,6 +28,10 @@ describe "Nutrition" do
      xml
   }
 
+  it "should be able to access things via xpath, and then continue with terminology selectors" do
+    subject.xpath('//food').first._name.text.should == "Avocado Dip"
+  end
+
   it "should have total fat information" do
     subject.daily_values.total_fat.text.should == "65"
     subject.daily_values.total_fat.value.should include(65)
