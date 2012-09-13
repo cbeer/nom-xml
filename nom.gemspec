@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "nom/version"
+require "nom/xml/version"
 
 Gem::Specification.new do |s|
-  s.name = "nom"
-  s.version = Nom::VERSION
+  s.name = "nom-xml"
+  s.version = Nom::XML::VERSION
   s.platform = Gem::Platform::RUBY
   s.authors = ["Chris Beer"]
   s.email = %q{cabeer@stanford.edu}

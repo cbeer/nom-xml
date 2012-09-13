@@ -1,4 +1,4 @@
-module Nom::Decorators::Terminology
+module Nom::XML::Decorators::Terminology
   def self.extended klass
 
     klass.add_terminology_methods!

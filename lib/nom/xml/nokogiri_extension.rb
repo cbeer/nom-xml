@@ -1,14 +1,14 @@
-module Nom
+module Nom::XML
   module NokogiriExtension
 
     def nom!
-      unless decorators(Nokogiri::XML::Node).include? Nom::Decorators::Terminology
-        decorators(Nokogiri::XML::Node) << Nom::Decorators::Terminology
+      unless decorators(Nokogiri::XML::Node).include? Nom::XML::Decorators::Terminology
+        decorators(Nokogiri::XML::Node) << Nom::XML::Decorators::Terminology
         decorate!
       end
 
-      unless decorators(Nokogiri::XML::NodeSet).include? Nom::Decorators::NodeSet
-        decorators(Nokogiri::XML::NodeSet) << Nom::Decorators::NodeSet
+      unless decorators(Nokogiri::XML::NodeSet).include? Nom::XML::Decorators::NodeSet
+        decorators(Nokogiri::XML::NodeSet) << Nom::XML::Decorators::NodeSet
         decorate!
       end
 

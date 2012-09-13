@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Nom::NokogiriExtension do
+describe Nom::XML::NokogiriExtension do
   let(:doc) {
     Nokogiri::XML(<<-eoxml)
       <item>

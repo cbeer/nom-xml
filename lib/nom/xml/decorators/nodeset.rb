@@ -1,4 +1,4 @@
-module Nom::Decorators::NodeSet
+module Nom::XML::Decorators::NodeSet
 	def method_missing sym, *args, &block
 		if self.all? { |node| node.respond_to? sym }
 			result = self.collect { |node| node.send(sym, *args, &block) }.flatten
