@@ -13,7 +13,7 @@ describe "Nutrition" do
          end
        end
 
-       t.food do |food|
+       t.foods :path => 'food' do |food|
          food._name :path => 'name'
          food.mfr
 
@@ -33,10 +33,10 @@ describe "Nutrition" do
     subject.daily_values.total_fat.value.should include(65)
     subject.daily_values.total_fat.units.text.should =='g'
 
-    subject.food.total_fat.value.inject(:+).should == 117
+    subject.foods.total_fat.value.inject(:+).should == 117
   end
 
   it "should have food names" do
-    subject.food._name.text.should include("Avocado Dip")
+    subject.foods._name.text.should include("Avocado Dip")
   end
 end
