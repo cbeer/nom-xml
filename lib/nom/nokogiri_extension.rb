@@ -35,7 +35,11 @@ module Nom
 
       node.terms.each do |k, t|
         (class << node; self; end).send(:define_method, k.to_sym) do
-          result = self.xpath(t.local_xpath)
+          if self.is_a? Nokogiri::XML::Document
+            result = self.root.xpath(t.local_xpath)
+          else
+            result = self.xpath(t.local_xpath)
+          end
           m = t.options[:accessor]
           case
           when m.nil?
