@@ -68,13 +68,7 @@ describe Nom do
   #   </level2>
   # </level1>
 
-  it "Should be able to query for all the 'level3' nodes (leafs with different parents)" 
-  it "Should be able to query for all the 'level3' nodes that are children of parent1 (leafs with same parent)" 
-  it "Should be able to query for the nth child of a specific node"
-  it "Should be able to update the inner text of a specific target node"
   it "Should be able to update the inner texts of a bunch of nodes????? (e.g. find('level2 > level3').innerText=['one', 'two', 'three']"
   it "Should be able to add a subtree at a specific point in the graph"
-  it "Should be able to remove a subtree from the graph"
-  it "should be able to set the text content of a node to nil"
  
 end
