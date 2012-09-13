@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.summary = %q{ asdf }
   s.description = %q{ asdfgh }
 
+  s.add_dependency 'activesupport'
   s.add_dependency 'nokogiri'
 
   s.add_development_dependency "rspec"
