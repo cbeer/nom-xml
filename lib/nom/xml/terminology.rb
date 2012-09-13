@@ -77,39 +77,11 @@ module Nom::XML
 
     protected
     def add_term method, options = {}, *args, &block
-      terms[method] = if options[:ref]
-        TermRef.new(self, method, options, *args, &block)
-      else
-        Term.new(self, method, options, *args, &block)
-      end
+      terms[method] = Term.new(self, method, options, *args, &block)
     end
 
     def term method, *args, &block
       terms[method]
-    end
-  end
-
-  class TermRef < Term
-    def ref
-      elements = Array(options[:ref])
-
-      elements.inject(parent) { |memo, mtd| memo.send(mtd) }
-    end
-
-    def key? term
-      ref.key? term
-    end
-
-    def local_xpath
-      (options[:path] || ref.local_xpath).to_s
-    end
-
-    def method_missing *args, &block
-      if in_edit_context?
-        super
-      else
-        ref.method_missing(*args, &block).substitute_parent(self)
-      end
     end
   end
 
