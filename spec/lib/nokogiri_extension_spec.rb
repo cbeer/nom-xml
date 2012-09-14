@@ -16,11 +16,14 @@ describe Nom::XML::NokogiriExtension do
       </item>
     eoxml
   }
-  describe "#add_terminology_methods" do
-    context "root node" do
-      it "should add terminology methods to the root node" do
 
-      end
+  describe "#nom!" do
+    it "should decorate Nodes and Nodesets with our decorators" do
+      doc.nom!
+
+      doc.root.should be_a_kind_of(Nom::XML::Decorators::Terminology)
+
+      doc.xpath('//*').should be_a_kind_of(Nom::XML::Decorators::NodeSet)
     end
   end
 end
