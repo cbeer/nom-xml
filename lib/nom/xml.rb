@@ -5,6 +5,7 @@ module Nom
     require 'nom/xml/version'
     require 'nom/xml/term'
     require 'nom/xml/terminology'
+    require 'nom/xml/template_registry'
     require 'nom/xml/decorators'
 
     require 'nom/xml/nokogiri_extension'

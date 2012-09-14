@@ -6,14 +6,17 @@ module Nom::XML
     def nom!
       unless decorators(Nokogiri::XML::Node).include? Nom::XML::Decorators::Terminology
         decorators(Nokogiri::XML::Node) << Nom::XML::Decorators::Terminology
-        decorate!
       end
 
       unless decorators(Nokogiri::XML::NodeSet).include? Nom::XML::Decorators::NodeSet
         decorators(Nokogiri::XML::NodeSet) << Nom::XML::Decorators::NodeSet
-        decorate!
       end
 
+      unless decorators(Nokogiri::XML::Document).include? Nom::XML::Decorators::TemplateRegistry
+        decorators(Nokogiri::XML::Document) << Nom::XML::Decorators::TemplateRegistry
+      end
+
+      decorate!
       self
     end
 
@@ -29,6 +32,19 @@ module Nom::XML
     def terminology
       @terminology ||= Nom::XML::Terminology.new
     end
+
+    def template_registry
+      @template_registry ||= Nom::XML::TemplateRegistry.new
+    end
+
+    # Define a new node template with the Nom::XML::TemplateRegistry.
+    # * +name+ is a Symbol indicating the name of the new template.
+    # * The +block+ does the work of creating the new node, and will receive
+    #   a Nokogiri::XML::Builder and any other args passed to one of the node instantiation methods.
+    def define_template name, &block
+      self.template_registry.define name, &block
+    end
+
 
   end
 end
