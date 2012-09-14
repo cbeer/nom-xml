@@ -44,7 +44,7 @@ module Nom::XML::Decorators::Terminology
   ##
   # Get the terminology terms associated with this node
   def terms
-    return [] if self.parent.nil? or self.parent.term_accessors.empty?
+    return {} unless self.respond_to? :parent and not self.parent.term_accessors.empty?
 
     self.parent.term_accessors.select do |k,term|
       self.parent.xpath(term.local_xpath, self.document.terminology_namespaces).include? self
@@ -55,8 +55,8 @@ module Nom::XML::Decorators::Terminology
   ##
   # Collection of salient terminology accessors for this node
   def term_accessors
-    case self
-      when self.document.root, Nokogiri::XML::Document
+    case
+      when (self == self.document.root or self.is_a? Nokogiri::XML::Document)
         root_terms
       else
         child_terms
