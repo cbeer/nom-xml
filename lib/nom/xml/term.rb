@@ -61,15 +61,6 @@ module Nom::XML
       terms.key? term
     end
 
-    def substitute_parent p
-      obj = self.dup
-
-      obj.parent = p
-      obj.clear_parent_cache
-
-      obj
-    end
-
     protected
     def add_term method, options = {}, *args, &block
       terms[method] = Term.new(self, method, options, *args, &block)
