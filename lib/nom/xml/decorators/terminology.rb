@@ -7,7 +7,7 @@ module Nom::XML::Decorators::Terminology
   ##
   # Add terminology accessors for querying child terms
   def add_terminology_methods!
-    self.terms.each do |k, t|
+    self.term_accessors.each do |k, t|
       (class << self; self; end).send(:define_method, k.to_sym) do |*args|
         options = args.extract_options!
 
@@ -41,46 +41,52 @@ module Nom::XML::Decorators::Terminology
     self
   end
 
-  def terms
-    terms = if self == self.document.root or self.is_a? Nokogiri::XML::Document
-      root_terms
-    elsif not self.parent.terms.empty?
-      child_terms
-    else
-      []
-    end
-
-    self.ancestors.each do |a|
-      a.terms.each { |k,t| terms[k] ||= t if t.options[:global] }
-    end
-
-    terms
-  end
-
-  private
-
-  def root_terms
-    self.document.terminology.terms
-  end
-
-  def child_terms
-    h = {}
-
-    collect_terms_for_node.each do |k,v|
-      v.terms.each do |k1, v1|
-        h[k1] = v1
-      end
-    end
-
-    h
-  end
-
   ##
-  #find this self in the terminology
-  def collect_terms_for_node
-    self.parent.terms.select do |k,term|
+  # Get the terminology terms associated with this node
+  def terms
+    return [] if self.parent.nil? or self.parent.term_accessors.empty?
+
+    self.parent.term_accessors.select do |k,term|
       self.parent.xpath(term.local_xpath, self.document.terminology_namespaces).include? self
     end
   end
 
+  protected
+  ##
+  # Collection of salient terminology accessors for this node
+  def term_accessors
+    case self
+      when self.document.root, Nokogiri::XML::Document
+        root_terms
+      else
+        child_terms
+    end
+  end
+
+  private
+
+  ##
+  # Root terms for the document
+  def root_terms
+    self.document.terminology.terms
+  end
+
+  ##
+  # Terms that are immediate children of this node, or are globally applicable
+  def child_terms
+    h = {}
+
+    terms.each do |k,term|
+
+      term.terms.each do |k1, v1|
+        h[k1] = v1
+      end
+    end
+
+    self.ancestors.each do |a|
+      a.term_accessors.each { |k,t| h[k] ||= t if t.options[:global] }
+    end
+
+    h
+  end
 end
