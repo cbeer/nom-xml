@@ -7,12 +7,7 @@ module Nom::XML::Decorators::Terminology
   ##
   # Add terminology accessors for querying child terms
   def add_terminology_methods!
-    terms_to_add = self.terms
-    self.ancestors.each do |a|
-      a.terms.each { |k,t| terms_to_add[k] ||= t if t.options[:global] }
-    end
-
-    terms_to_add.each do |k, t|
+    self.terms.each do |k, t|
       (class << self; self; end).send(:define_method, k.to_sym) do |*args|
         options = args.extract_options!
 
@@ -47,13 +42,19 @@ module Nom::XML::Decorators::Terminology
   end
 
   def terms
-    if self == self.document.root or self.is_a? Nokogiri::XML::Document
+    terms = if self == self.document.root or self.is_a? Nokogiri::XML::Document
       root_terms
     elsif not self.parent.terms.empty?
       child_terms
     else
       []
     end
+
+    self.ancestors.each do |a|
+      a.terms.each { |k,t| terms[k] ||= t if t.options[:global] }
+    end
+
+    terms
   end
 
   private
