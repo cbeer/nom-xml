@@ -3,6 +3,7 @@ require 'nokogiri'
 module Nom
   module XML
     require 'nom/xml/version'
+    require 'nom/xml/term'
     require 'nom/xml/terminology'
     require 'nom/xml/decorators'
 
