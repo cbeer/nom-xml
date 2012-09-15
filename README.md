@@ -2,16 +2,18 @@
 
 [![Build Status](https://secure.travis-ci.org/cbeer/nom.png)](http://travis-ci.org/cbeer/nom)
 
-A library to help you tame sprawling XML schemas
+A library to help you tame sprawling XML schemas.
 
-NOM allows you to define a “terminology” to ease translation between XML and ruby objects – you can query the xml for Nodes or node values without ever writing a line of XPath.
+NOM allows you to define a “terminology” to ease translation between XML and ruby objects – you can query the xml for Nodes or node values without ever writing a line of XPath. NOM is built on top of [nokogiri](http://nokogiri.org) decorators, which means you can mix-and-match NOM accessors with nokogiri xpaths, xml manipulation, and traversing and it will just work.
 
 
 Some Handy Links
 ----------------
-[API](http://rubydoc.info/github/cbeer/nom) - A reference to NOM's classes
-[#projecthydra](http://webchat.freenode.net/?channels=#projecthydra) on irc.freenode.net
-[Project Hydra Google Group](http://groups.google.com/group/hydra-tech) - community mailing list and forum
+Here are some resources to help you learn more about nom-xml:
+
+- [API](http://rubydoc.info/github/cbeer/nom) - A reference to NOM's classes
+- [#projecthydra](http://webchat.freenode.net/?channels=#projecthydra) on irc.freenode.net
+- [Project Hydra Google Group](http://groups.google.com/group/hydra-tech) - community mailing list and forum
 
 An Example
 ---------------
@@ -45,6 +47,9 @@ An Example
 ```
 
 ```ruby
+require 'nom/xml'
+
+# load the source document as normal
 doc = Nokogiri::XML my_source_document
 
 doc.set_terminology do |t|
