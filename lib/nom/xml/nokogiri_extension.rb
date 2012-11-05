@@ -22,7 +22,7 @@ module Nom::XML
 
     def set_terminology options = {}, &block
       @terminology_namespaces = options[:namespaces]
-      @terminology = Nom::XML::Terminology.new(options, &block)
+      @terminology = Nom::XML::Terminology.new(self, options, &block)
     end
 
     def terminology_namespaces
@@ -30,7 +30,7 @@ module Nom::XML
     end
 
     def terminology
-      @terminology ||= Nom::XML::Terminology.new
+      @terminology ||= Nom::XML::Terminology.new self
     end
 
     def template_registry

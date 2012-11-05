@@ -47,6 +47,10 @@ module Nom::XML
       (options[:xmlns] if options) || (self.parent.xmlns if self.parent)
     end
 
+    def nodes
+      terminology.document.root.xpath(xpath, terminology.namespaces)
+    end
+
     def method_missing method, *args, &block 
       if in_edit_context?
         add_term(method, *args, &block)
@@ -65,6 +69,10 @@ module Nom::XML
       [self, terms.map { |k,v| v.flatten }].flatten
     end
 
+    def terminology
+      @terminology ||= parent.terminology
+    end
+
     protected
     def add_term method, options = {}, *args, &block
       terms[method] = Term.new(self, method, options, *args, &block)
@@ -73,6 +81,7 @@ module Nom::XML
     def term method, *args, &block
       terms[method]
     end
+
   end
 
 end

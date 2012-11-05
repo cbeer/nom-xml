@@ -83,11 +83,12 @@ describe "Namespaces example" do
   it "should let you go from a terminology to nodes" do
     subject.terminology.flatten.length.should == 10
 
-    subject.terminology.flatten.select { |x| x.options[:index_as] }.length.should == 2
+    subject.terminology.flatten.select { |x| x.options[:index_as] }.should have(2).terms 
+    subject.terminology.flatten.select { |x| x.options[:index_as] }.map { |x| x.nodes }.flatten.should have(2).nodes
+  end
 
-    subject.terminology.flatten.select { |x| x.options[:index_as] }.each do |term|
-      subject.xpath(term.xpath, subject.terminology.namespaces)
-    end
+  it "should let you go from a term to a terminology" do
+    subject.personal_authors.terms.first.terminology.should == subject.terminology
   end
 
 end
