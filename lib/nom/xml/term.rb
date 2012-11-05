@@ -61,6 +61,10 @@ module Nom::XML
       terms.key? term
     end
 
+    def flatten
+      [self, terms.map { |k,v| v.flatten }].flatten
+    end
+
     protected
     def add_term method, options = {}, *args, &block
       terms[method] = Term.new(self, method, options, *args, &block)

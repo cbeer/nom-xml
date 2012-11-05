@@ -22,7 +22,7 @@ module Nom::XML
 
     def set_terminology options = {}, &block
       @terminology_namespaces = options[:namespaces]
-      @terminology = Nom::XML::Terminology.new &block
+      @terminology = Nom::XML::Terminology.new(options, &block)
     end
 
     def terminology_namespaces

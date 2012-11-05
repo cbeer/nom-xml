@@ -114,7 +114,7 @@ describe "Nutrition" do
       end
 
       it "should find the right term" do
-        subject.terms.keys.should include(:a)
+        subject.terms.map { |x| x.name }.should include(:a)
       end
     end
 
@@ -126,7 +126,7 @@ describe "Nutrition" do
       end
 
       it "should find the right terms" do
-        subject.terms.keys.should include(:b, :b_ref)
+        subject.terms.map { |x| x.name }.should include(:b, :b_ref)
       end
     end
   end

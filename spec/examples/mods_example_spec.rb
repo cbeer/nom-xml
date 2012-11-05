@@ -11,12 +11,12 @@ describe "Namespaces example" do
 
       t.author :path => '//mods:name' do |n|
         n.valueURI :path => '@valueURI'
-        n.namePart :path => 'mods:namePart', :single => true
+        n.namePart :path => 'mods:namePart', :single => true, :index_as => [:type_1]
       end
 
       t.corporate_authors :path => '//mods:name[@type="corporate"]'
       t.personal_authors :path => 'mods:name[@type="personal"]' do |n|
-        n.roleTerm :path => 'mods:role/mods:roleTerm'
+        n.roleTerm :path => 'mods:role/mods:roleTerm', :index_as => [:type_1]
 
         n.name_role_pair :path => '.', :accessor => lambda { |node| node.roleTerm.text + ": " + node.namePart.text }
 
@@ -74,6 +74,20 @@ describe "Namespaces example" do
   it "should work with attributes" do
     eric =subject.personal_authors.first
     eric.valueURI.to_s.should == 'http://id.loc.gov/authorities/names/n92101908'
+  end
+
+  it "should allow you to access a term from the node" do
+    subject.personal_authors.namePart.terms.map { |term|term.options[:index_as] }.flatten.should include(:type_1)
+  end
+
+  it "should let you go from a terminology to nodes" do
+    subject.terminology.flatten.length.should == 10
+
+    subject.terminology.flatten.select { |x| x.options[:index_as] }.length.should == 2
+
+    subject.terminology.flatten.select { |x| x.options[:index_as] }.each do |term|
+      subject.xpath(term.xpath, subject.terminology.namespaces)
+    end
   end
 
 end

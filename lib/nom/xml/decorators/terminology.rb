@@ -56,7 +56,7 @@ module Nom::XML::Decorators::Terminology
 
     self.parent.term_accessors.select do |k,term|
       self.parent.xpath(term.local_xpath, self.document.terminology_namespaces).include? self
-    end
+    end.map { |k, term| term }
   end
 
   protected
@@ -84,7 +84,7 @@ module Nom::XML::Decorators::Terminology
   def child_terms
     h = {}
 
-    terms.each do |k,term|
+    terms.each do |term|
 
       term.terms.each do |k1, v1|
         h[k1] = v1
