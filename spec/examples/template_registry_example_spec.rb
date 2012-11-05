@@ -23,7 +23,7 @@ describe "Template Registry example" do
 
     xml.set_terminology do |t|
       t.a
-      t.b
+      t.b :template => :asdf
       t.b_ref :path => 'b'
 
       t.c do |c|
