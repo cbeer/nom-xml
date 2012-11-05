@@ -93,6 +93,24 @@ describe "Nutrition" do
 
       subject.asdf
     end
+
+    it "should raise an error on unknown accessors" do
+      mock_term = mock(:local_xpath => '//asdf', :options => {:accessor => 123 })
+      @term_accessors = { :asdf => mock_term }
+
+      subject.should_receive(:xpath).with('//asdf', anything)
+
+      expect { subject.asdf }.to raise_error
+    end
+
+    it "should convert single-valued objects to single values" do
+      mock_term = mock(:local_xpath => '//asdf', :options => {:single => true })
+      @term_accessors = { :asdf => mock_term }
+
+      subject.should_receive(:xpath).with('//asdf', anything).and_return([1])
+
+      subject.asdf.should == 1
+    end
   end
 
   describe "#terms" do
