@@ -10,8 +10,8 @@ describe "Namespaces example" do
      xml.set_terminology(:namespaces => { 'mods' => 'http://www.loc.gov/mods/v3'}) do |t|
 
       t.author :path => '//mods:name' do |n|
-        n.valueURI :path => '@valueURI', :accessor => lambda { |node| node.to_s }
-        n.namePart :path => 'mods:namePart'   
+        n.valueURI :path => '@valueURI'
+        n.namePart :path => 'mods:namePart', :single => true
       end
 
       t.corporate_authors :path => '//mods:name[@type="corporate"]'
@@ -34,8 +34,24 @@ describe "Namespaces example" do
      xml
   }
 
+  it "should return nodesets by default" do
+    subject.personal_authors.should be_a_kind_of(Nokogiri::XML::NodeSet)
+  end
+
+  it "should return single elements on demand" do
+    subject.personal_authors.first.namePart.should be_a_kind_of(Nokogiri::XML::Element)
+  end
+
+  it "should return attributes as single-valued" do
+    subject.personal_authors.first.valueURI.should be_a_kind_of(Nokogiri::XML::Attr)
+  end
+
   it "should share terms over matched nodes" do
     subject.personal_authors.first.namePart.text.should == "Alterman, Eric"
+  end
+
+  it "should return single elements out of nodesets correctly" do
+    subject.personal_authors.namePart.should be_a_kind_of(Nokogiri::XML::NodeSet)
   end
 
   it "should create enumerable objects" do
@@ -57,7 +73,7 @@ describe "Namespaces example" do
 
   it "should work with attributes" do
     eric =subject.personal_authors.first
-    eric.valueURI.should include('http://id.loc.gov/authorities/names/n92101908')
+    eric.valueURI.to_s.should == 'http://id.loc.gov/authorities/names/n92101908'
   end
 
 end

@@ -24,8 +24,9 @@ module Nom::XML::Decorators::Terminology
                      self.xpath(xpath, self.document.terminology_namespaces)
                  end
 
+
         m = t.options[:accessor]
-        case
+        return_value = case
           when m.nil?
             result
           when m.is_a?(Symbol)
@@ -35,6 +36,13 @@ module Nom::XML::Decorators::Terminology
           else
             raise "Unknown accessor class: #{m.class}"
         end
+
+
+        if t.options[:single] or (return_value.length == 1 and return_value.first.is_a? Nokogiri::XML::Attr)
+          return return_value.first
+        end
+
+        return return_value
       end
     end
 
