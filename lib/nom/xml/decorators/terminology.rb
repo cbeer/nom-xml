@@ -38,7 +38,7 @@ module Nom::XML::Decorators::Terminology
         end
 
 
-        if t.options[:single] or (return_value.length == 1 and return_value.first.is_a? Nokogiri::XML::Attr)
+        if return_value and (t.options[:single] or (return_value.length == 1 and return_value.first.is_a? Nokogiri::XML::Attr))
           return return_value.first
         end
 
