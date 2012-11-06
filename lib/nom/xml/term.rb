@@ -87,6 +87,10 @@ module Nom::XML
       end
     end
 
+    def to_s
+      "#<Nom::XML::Term name=#{name}>"
+    end
+
     protected
     def in_edit_context &block
       @edit_context = true

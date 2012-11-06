@@ -52,11 +52,19 @@ module Nom::XML::Decorators::Terminology
   ##
   # Get the terminology terms associated with this node
   def terms
-    return {} unless self.respond_to? :parent and not self.parent.term_accessors.empty?
+    return @terms if @terms
+    p = self.parent
 
-    self.parent.term_accessors.select do |k,term|
-      self.parent.xpath(term.local_xpath, self.document.terminology_namespaces).include? self
-    end.map { |k, term| term }
+    t = []
+
+    until p.is_a? Nokogiri::XML::Document
+      p.term_accessors.each do |k,term|
+        t << term if term.nodes.include? self
+      end
+      p = p.parent
+    end
+
+    @terms ||= t
   end
 
   protected

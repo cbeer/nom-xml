@@ -16,7 +16,9 @@ describe "Namespaces example" do
 
       t.corporate_authors :path => '//mods:name[@type="corporate"]'
       t.personal_authors :path => 'mods:name[@type="personal"]' do |n|
-        n.roleTerm :path => 'mods:role/mods:roleTerm', :index_as => [:type_1]
+        n.roleTerm :path => 'mods:role/mods:roleTerm', :index_as => [:type_1] do |r|
+          r.type :path => '@type'
+        end
 
         n.name_role_pair :path => '.', :accessor => lambda { |node| node.roleTerm.text + ": " + node.namePart.text }
 
@@ -64,6 +66,8 @@ describe "Namespaces example" do
  
     eric.namePart.text.should == "Alterman, Eric"
     eric.roleTerm.text.should == "creator"
+
+    eric.roleTerm.type.text.should == "text"
   end
 
   it "should let you mix and match xpaths and nom accessors" do
@@ -81,7 +85,7 @@ describe "Namespaces example" do
   end
 
   it "should let you go from a terminology to nodes" do
-    subject.terminology.flatten.length.should == 10
+    subject.terminology.flatten.length.should == 11
 
     subject.terminology.flatten.select { |x| x.options[:index_as] }.should have(2).terms 
     subject.terminology.flatten.select { |x| x.options[:index_as] }.map { |x| x.nodes }.flatten.should have(2).nodes
