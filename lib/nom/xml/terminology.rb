@@ -22,5 +22,9 @@ module Nom::XML
     def xpath
       nil
     end
+
+    def full_name
+      %Q{Terminology:#{self.object_id}}
+    end
   end
 end

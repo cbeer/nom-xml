@@ -24,6 +24,10 @@ module Nom::XML
       end
     end
 
+    def full_name
+      [parent.full_name, "term:#{name}"].join("/")
+    end
+
     ##
     # Traverse the tree to figure out what terminology this term belongs to
     # @return [Nom::XML::Terminology]
@@ -88,7 +92,7 @@ module Nom::XML
     end
 
     def to_s
-      "#<Nom::XML::Term name=#{name}>"
+      %Q{#<#{self.class.to_s}:#{object_id} #{full_name} name="#{name}" xpath="#{xpath}">}
     end
 
     protected

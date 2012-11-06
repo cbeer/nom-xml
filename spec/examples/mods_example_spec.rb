@@ -84,6 +84,11 @@ describe "Namespaces example" do
     subject.personal_authors.namePart.terms.map { |term|term.options[:index_as] }.flatten.should include(:type_1)
   end
 
+  it "should allow you to use multiple terms to address the same node" do
+    t = subject.xpath('//mods:name', subject.terminology.namespaces).first.terms
+    t.map { |x| x.name }.should include(:author, :personal_authors)
+  end
+
   it "should let you go from a terminology to nodes" do
     subject.terminology.flatten.length.should == 11
 
