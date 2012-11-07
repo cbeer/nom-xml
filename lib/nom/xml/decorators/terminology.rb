@@ -1,24 +1,33 @@
 module Nom::XML::Decorators::Terminology
   
-  ##
-  # Nom::XML::Decorators::Terminology is mixed into
-  # every Nokogiri::XML::Node (See Nom::XML::NokogiriExtension)
-  #
-  # We need to add terminology-based accessors to the Node
-  def self.extended node
-    node.add_terminology_methods!
+  METHODS_WE_NEED_TO_BE_CAREFUL_OF = [:id, :type]
+
+  METHODS_WE_NEED_TO_BE_CAREFUL_OF.each do |t|
+    class_eval <<-eos
+      def #{t.to_s} *args, &block
+        if self.term_accessors[:#{t}]
+          lookup_term(self.term_accessors[:#{t}], *args, &block)
+        else
+          super
+        end
+      end
+    eos
   end
 
-  ##
-  # Add methods to access child terms (defined by the document's terminology)
-  def add_terminology_methods!
-    self.term_accessors.each do |k, t|
-      (class << self; self; end).send(:define_method, k.to_sym) do |*args|
-        lookup_term(t, *args)
+  def method_missing method, *args, &block
+    if self.term_accessors[method.to_sym]
+      (class << self; self; end).send(:define_method, method.to_sym) do |*local_args|
+        lookup_term(self.term_accessors[method.to_sym], *local_args)
       end
-    end
 
-    self
+      self.send(method, *args, &block)
+    else
+      super
+    end
+  end
+
+  def respond_to? method
+    super || self.term_accessors[method.to_sym]
   end
 
   ##
