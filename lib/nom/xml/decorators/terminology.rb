@@ -30,9 +30,9 @@ module Nom::XML::Decorators::Terminology
           when m.nil?
             result
           when m.is_a?(Symbol)
-            result.collect { |r| r.send(m) }
+            result.collect { |r| r.send(m) }.compact
           when m.is_a?(Proc)
-            result.collect { |r| m.call(r) }
+            result.collect { |r| m.call(r) }.compact
           else
             raise "Unknown accessor class: #{m.class}"
         end
