@@ -30,5 +30,5 @@ end
 desc "Continuous Integration build"
 task :ci do
   Rake::Task['spec'].invoke
-  Rake::Task['yard'].invoke
+ # Rake::Task['yard'].invoke
 end
