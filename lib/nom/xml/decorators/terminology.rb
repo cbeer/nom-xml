@@ -1,11 +1,16 @@
 module Nom::XML::Decorators::Terminology
-  def self.extended klass
-
-    klass.add_terminology_methods!
+  
+  ##
+  # Nom::XML::Decorators::Terminology is mixed into
+  # every Nokogiri::XML::Node (See Nom::XML::NokogiriExtension)
+  #
+  # We need to add terminology-based accessors to the Node
+  def self.extended node
+    node.add_terminology_methods!
   end
 
   ##
-  # Add terminology accessors for querying child terms
+  # Add methods to access child terms (defined by the document's terminology)
   def add_terminology_methods!
     self.term_accessors.each do |k, t|
       (class << self; self; end).send(:define_method, k.to_sym) do |*args|
@@ -55,37 +60,30 @@ module Nom::XML::Decorators::Terminology
   end
 
   ##
-  # Get the terminology terms associated with this node
+  # Get the terms associated with this node
   def terms
-    return @terms if @terms
-    p = self.parent
-
-    t = []
-
-    until p.is_a? Nokogiri::XML::Document
-      p.term_accessors.each do |k,term|
-        t << term if term.nodes.include? self
-      end
-      p = p.parent
-    end
-
-    @terms ||= t
+    @terms ||= self.ancestors.map { |p| p.term_accessors(self).values }.flatten.compact.uniq
   end
 
   protected
   ##
   # Collection of salient terminology accessors for this node
-  def term_accessors
-    case
+  #
+  # The root note or document node should have all the root terms
+  def term_accessors matching_node =  nil
+    terms = case
       when (self == self.document.root or self.is_a? Nokogiri::XML::Document)
         root_terms
       else
         child_terms
     end
+
+    terms &&= terms.select { |key, term| term.nodes.include? matching_node } if matching_node
+
+    terms
   end
 
   private
-
   ##
   # Root terms for the document
   def root_terms
