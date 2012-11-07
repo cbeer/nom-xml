@@ -1,30 +1,30 @@
 module Nom::XML::Decorators::Terminology
-  
-  METHODS_WE_NEED_TO_BE_CAREFUL_OF = [:id, :type]
 
-  METHODS_WE_NEED_TO_BE_CAREFUL_OF.each do |t|
-    class_eval <<-eos
-      def #{t.to_s} *args, &block
-        if self.term_accessors[:#{t}]
-          lookup_term(self.term_accessors[:#{t}], *args, &block)
-        else
-          super
-        end
+  def self.extended node
+    node.add_terminology_method_overrides!
+  end
+
+  def add_terminology_method_overrides!
+    self.term_accessors.each do |k, term|
+      if self.respond_to_without_terms? k and not term.options[:override]
+        raise "Trying to redefine method #{k} on #{self.to_s}"
       end
-    eos
+    end.select { |k, term| term.options[:override] }.each do |method, term|
+       define_term_method(method, self.term_accessors[method.to_sym])
+    end
   end
 
   def method_missing method, *args, &block
     if self.term_accessors[method.to_sym]
-      (class << self; self; end).send(:define_method, method.to_sym) do |*local_args|
-        lookup_term(self.term_accessors[method.to_sym], *local_args)
-      end
+      define_term_method(method, self.term_accessors[method.to_sym])
 
       self.send(method, *args, &block)
     else
       super
     end
   end
+
+  alias_method :respond_to_without_terms?, :respond_to?
 
   def respond_to? method
     super || self.term_accessors[method.to_sym]
@@ -79,6 +79,12 @@ module Nom::XML::Decorators::Terminology
     end
 
     h
+  end
+
+  def define_term_method method, term
+    (class << self; self; end).send(:define_method, method.to_sym) do |*local_args|
+      lookup_term(self.term_accessors[method.to_sym], *local_args)
+    end
   end
 
   def lookup_term term, *args

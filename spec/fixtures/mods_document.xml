@@ -11,6 +11,7 @@
   <name type="personal" authorityURI="http://id.loc.gov/authorities/names"
     valueURI="http://id.loc.gov/authorities/names/n92101908">
     <namePart>Alterman, Eric</namePart>
+    <description>asdf</description>
     <role>
       <roleTerm type="text">creator</roleTerm>
     </role>

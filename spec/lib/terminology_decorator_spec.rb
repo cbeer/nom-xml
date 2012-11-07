@@ -44,7 +44,7 @@ describe "Nutrition" do
     end
 
     it "should define terminology accessors" do
-      mock_term = mock
+      mock_term = mock(:options => {})
       @term_accessors = { :asdf => mock_term }
 
       subject.should respond_to(:asdf)
