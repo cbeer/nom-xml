@@ -14,45 +14,7 @@ module Nom::XML::Decorators::Terminology
   def add_terminology_methods!
     self.term_accessors.each do |k, t|
       (class << self; self; end).send(:define_method, k.to_sym) do |*args|
-        options = args.extract_options!
-
-        args += options.map { |key, value| %{#{key}="#{value.gsub(/"/, '\\\"') }"} }
-
-        xpath = t.local_xpath
-
-        xpath += "[#{t.options[:if]}]" if t.options[:if] and t.options[:if].is_a? String
-        xpath += "[not(#{t.options[:unless]})]" if t.options[:unless] and t.options[:unless].is_a? String
-
-        xpath += "[#{args.join('][')}]" unless args.empty?
-
-        result = case self
-                   when Nokogiri::XML::Document
-                     self.root.xpath(xpath, self.document.terminology_namespaces)
-                   else
-                     self.xpath(xpath, self.document.terminology_namespaces)
-                 end
-
-        result = result.select &t.options[:if] if t.options[:if].is_a? Proc
-        result = result.reject &t.options[:unless] if t.options[:unless].is_a? Proc
-
-        m = t.options[:accessor]
-        return_value = case
-          when m.nil?
-            result
-          when m.is_a?(Symbol)
-            result.collect { |r| r.send(m) }.compact
-          when m.is_a?(Proc)
-            result.collect { |r| m.call(r) }.compact
-          else
-            raise "Unknown accessor class: #{m.class}"
-        end
-
-
-        if return_value and (t.options[:single] or (return_value.length == 1 and return_value.first.is_a? Nokogiri::XML::Attr))
-          return return_value.first
-        end
-
-        return return_value
+        lookup_term(t, *args)
       end
     end
 
@@ -108,5 +70,47 @@ module Nom::XML::Decorators::Terminology
     end
 
     h
+  end
+
+  def lookup_term term, *args
+    options = args.extract_options!
+
+    args += options.map { |key, value| %{#{key}="#{value.gsub(/"/, '\\\"') }"} }
+
+    xpath = term.local_xpath
+
+    xpath += "[#{term.options[:if]}]" if term.options[:if] and term.options[:if].is_a? String
+    xpath += "[not(#{term.options[:unless]})]" if term.options[:unless] and term.options[:unless].is_a? String
+
+    xpath += "[#{args.join('][')}]" unless args.empty?
+
+    result = case self
+               when Nokogiri::XML::Document
+                 self.root.xpath(xpath, self.document.terminology_namespaces)
+               else
+                 self.xpath(xpath, self.document.terminology_namespaces)
+               end
+
+    result = result.select &(term.options[:if]) if term.options[:if].is_a? Proc
+    result = result.reject &(term.options[:unless]) if term.options[:unless].is_a? Proc
+
+    m = term.options[:accessor]
+   
+    return_value = case
+      when m.nil?
+        result
+      when m.is_a?(Symbol)
+        result.collect { |r| r.send(m) }.compact
+      when m.is_a?(Proc)
+        result.collect { |r| m.call(r) }.compact
+      else
+        raise "Unknown accessor class: #{m.class}"
+      end
+
+    if return_value and (term.options[:single] or (return_value.length == 1 and return_value.first.is_a? Nokogiri::XML::Attr))
+      return return_value.first
+    end
+
+    return return_value
   end
 end
