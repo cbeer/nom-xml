@@ -15,6 +15,9 @@ module Nom::XML::Decorators::Terminology
 
         xpath = t.local_xpath
 
+        xpath += "[#{t.options[:if]}]" if t.options[:if]
+        xpath += "[not(#{t.options[:unless]})]" if t.options[:unless]
+
         xpath += "[#{args.join('][')}]" unless args.empty?
 
         result = case self
