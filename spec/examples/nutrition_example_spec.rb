@@ -12,6 +12,8 @@ describe "Nutrition" do
          dv.total_fat :path => 'total-fat' do |tf|
            tf.value :path => '.', :accessor => lambda { |node| node.text.to_i }
            tf.units :path => '@units'
+           tf.units_if :path => '@units', :if => lambda { |node| true }
+           tf.units_if_false :path => '@units', :if => lambda { |node| false }
          end
        end
 
@@ -54,5 +56,10 @@ describe "Nutrition" do
   it "should have global terms" do
     subject.daily_values.total_fat.unit_value.should include('65g')
     subject.foods.first.at('serving').unit_value.should include('29g')
+  end
+
+  it "should accept if in proc-form" do
+    subject.daily_values.total_fat.units_if == subject.daily_values.total_fat.units
+    subject.daily_values.total_fat.units_if_false.should be_empty
   end
 end

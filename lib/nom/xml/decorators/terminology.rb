@@ -15,8 +15,8 @@ module Nom::XML::Decorators::Terminology
 
         xpath = t.local_xpath
 
-        xpath += "[#{t.options[:if]}]" if t.options[:if]
-        xpath += "[not(#{t.options[:unless]})]" if t.options[:unless]
+        xpath += "[#{t.options[:if]}]" if t.options[:if] and t.options[:if].is_a? String
+        xpath += "[not(#{t.options[:unless]})]" if t.options[:unless] and t.options[:unless].is_a? String
 
         xpath += "[#{args.join('][')}]" unless args.empty?
 
@@ -27,6 +27,8 @@ module Nom::XML::Decorators::Terminology
                      self.xpath(xpath, self.document.terminology_namespaces)
                  end
 
+        result = result.select &t.options[:if] if t.options[:if].is_a? Proc
+        result = result.reject &t.options[:unless] if t.options[:unless].is_a? Proc
 
         m = t.options[:accessor]
         return_value = case
