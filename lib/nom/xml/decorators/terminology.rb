@@ -116,7 +116,7 @@ module Nom::XML::Decorators::Terminology
         raise "Unknown accessor class: #{m.class}"
       end
 
-    if return_value and (term.options[:single] or (return_value.length == 1 and return_value.first.is_a? Nokogiri::XML::Attr))
+    if return_value and (term.options[:single] or (result.length == 1 and result.first.is_a? Nokogiri::XML::Attr))
       return return_value.first
     end
 

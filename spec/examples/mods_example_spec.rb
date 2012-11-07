@@ -9,7 +9,10 @@ describe "Namespaces example" do
 
      xml.set_terminology(:namespaces => { 'mods' => 'http://www.loc.gov/mods/v3'}) do |t|
 
+      t.genre :path => "mods:genre", :accessor => lambda { |e| e.text }
+
       t.author :path => '//mods:name' do |n|
+        n.authorityURI :path => '@authorityURI', :accessor => lambda { |e| e.text }
         n.valueURI :path => '@valueURI'
         n.namePart :path => 'mods:namePart', :single => true, :index_as => [:type_1]
       end
@@ -35,6 +38,7 @@ describe "Namespaces example" do
      xml
   }
 
+
   it "should return nodesets by default" do
     subject.personal_authors.should be_a_kind_of(Nokogiri::XML::NodeSet)
   end
@@ -45,6 +49,11 @@ describe "Namespaces example" do
 
   it "should return attributes as single-valued" do
     subject.personal_authors.first.valueURI.should be_a_kind_of(Nokogiri::XML::Attr)
+  end
+
+  
+  it "should treat attributes with an accessor as a single-able element" do
+    subject.author.first.authorityURI.should == 'http://id.loc.gov/authorities/names'
   end
 
   it "should share terms over matched nodes" do
@@ -89,7 +98,7 @@ describe "Namespaces example" do
   end
 
   it "should let you go from a terminology to nodes" do
-    subject.terminology.flatten.length.should == 11
+    subject.terminology.flatten.length.should == 13
 
     subject.terminology.flatten.select { |x| x.options[:index_as] }.should have(2).terms 
     subject.terminology.flatten.select { |x| x.options[:index_as] }.map { |x| x.nodes }.flatten.should have(2).nodes
