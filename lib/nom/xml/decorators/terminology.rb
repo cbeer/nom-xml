@@ -95,13 +95,14 @@ module Nom::XML::Decorators::Terminology
   def child_terms
     h = {}
 
+    # collect the sub-terms of the terms applicable to this node
     terms.each do |term|
-
       term.terms.each do |k1, v1|
         h[k1] = v1
       end
     end
 
+    # and mix in any global terms of this node's ancestors
     self.ancestors.each do |a|
       a.term_accessors.each { |k,t| h[k] ||= t if t.options[:global] }
     end
