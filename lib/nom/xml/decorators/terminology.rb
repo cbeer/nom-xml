@@ -33,7 +33,7 @@ module Nom::XML::Decorators::Terminology
   ##
   # Get the terms associated with this node
   def terms
-    @terms ||= self.ancestors.map { |p| p.term_accessors(self).values }.flatten.compact.uniq
+    @terms ||= self.ancestors.map { |p| p.term_accessors(self).map { |keys, values| values } }.flatten.compact.uniq
   end
 
   protected
@@ -95,7 +95,7 @@ module Nom::XML::Decorators::Terminology
 
     result = case self
                when Nokogiri::XML::Document
-                 self.root.xpath(xpath, self.document.terminology_namespaces)
+                 self.document.root.xpath(xpath, self.document.terminology_namespaces)
                else
                  self.xpath(xpath, self.document.terminology_namespaces)
                end

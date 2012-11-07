@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Namespaces example" do
 
-  let(:file) { File.open(File.join(File.dirname(__FILE__), '..', 'fixtures', 'mods_document.xml'), 'r') }
+  let(:file) { File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'mods_document.xml')) }
   let(:xml) { Nokogiri::XML(file) }
 
   subject {
@@ -17,7 +17,7 @@ describe "Namespaces example" do
       t.corporate_authors :path => '//mods:name[@type="corporate"]'
       t.personal_authors :path => 'mods:name[@type="personal"]' do |n|
         n.roleTerm :path => 'mods:role/mods:roleTerm', :index_as => [:type_1] do |r|
-          r.type :path => '@type'
+          r._type :path => '@type'
         end
 
         n.name_role_pair :path => '.', :accessor => lambda { |node| node.roleTerm.text + ": " + node.namePart.text }
@@ -32,7 +32,6 @@ describe "Namespaces example" do
      end
 
      xml.nom!
-
      xml
   }
 
@@ -67,7 +66,7 @@ describe "Namespaces example" do
     eric.namePart.text.should == "Alterman, Eric"
     eric.roleTerm.text.should == "creator"
 
-    eric.roleTerm.type.text.should == "text"
+    eric.roleTerm._type.text.should == "text"
   end
 
   it "should let you mix and match xpaths and nom accessors" do

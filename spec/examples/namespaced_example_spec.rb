@@ -6,8 +6,8 @@ describe "Namespaces example" do
 
   subject {
      xml.set_terminology(:namespaces => { 'html4' => 'http://www.w3.org/TR/html4/', 'furniture' => "http://www.w3schools.com/furniture"}) do |t|
-       t.table :xmlns => 'html4' do |t|
-         t.tr do |tr|
+       t.table :xmlns => 'html4' do |tb|
+         tb.tr do |tr|
            tr.td
          end
        end
