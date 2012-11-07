@@ -3,6 +3,8 @@ require 'active_support/core_ext/array'
 module Nom::XML
   module NokogiriExtension
 
+    ##
+    # Apply NOM decorators to Nokogiri classes
     def nom!
       unless decorators(Nokogiri::XML::Node).include? Nom::XML::Decorators::Terminology
         decorators(Nokogiri::XML::Node) << Nom::XML::Decorators::Terminology
@@ -20,17 +22,24 @@ module Nom::XML
       self
     end
 
+    ##
+    # Set the terminology accessors for this document
     def set_terminology options = {}, &block
-      @terminology_namespaces = options[:namespaces]
       @terminology = Nom::XML::Terminology.new(self, options, &block)
+      
+      self
     end
 
     def terminology_namespaces
-      @terminology_namespaces ||= {}
+      @terminology.namespaces
     end
 
     def terminology
       @terminology ||= Nom::XML::Terminology.new self
+    end
+
+    def terminology= terminology
+      @terminology = terminology
     end
 
     def template_registry
