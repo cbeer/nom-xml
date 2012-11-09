@@ -114,23 +114,7 @@ describe "Nutrition" do
       subject.asdf.should == 1
     end
 
-    it "should evaluate if" do
-       mock_term = mock(:local_xpath => '//asdf', :options => {:if => 'my-custom-function()' })
-       @term_accessors = { :asdf => mock_term }
 
-       subject.should_receive(:xpath).with('//asdf[my-custom-function()]', anything).and_return([1])
-
-       subject.asdf.should == [1]
-    end
-
-    it "should evaluate unless" do
-       mock_term = mock(:local_xpath => '//asdf', :options => {:unless => 'my-custom-function()' })
-       @term_accessors = { :asdf => mock_term }
-
-       subject.should_receive(:xpath).with('//asdf[not(my-custom-function())]', anything).and_return([1])
-
-       subject.asdf.should == [1]
-    end
   end
 
   describe "#terms" do

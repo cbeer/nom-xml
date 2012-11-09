@@ -46,13 +46,24 @@ module Nom::XML
     # Get the relative xpath to this node from its immediate parent's term
     # @return [String]
     def local_xpath
-      ("#{xmlns}:" unless xmlns.blank? ).to_s + (options[:path] || name).to_s
+      xpath = ("#{xmlns}:" unless xmlns.blank? ).to_s + (options[:path] || name).to_s
+
+      xpath += "[#{options[:if]}]" if options[:if] and options[:if].is_a? String
+      xpath += "[not(#{options[:unless]})]" if options[:unless] and options[:unless].is_a? String
+
+      xpath
     end
 
     ##
     # Get the document nodes associated with this term
     # @return [Nokogiri::XML::NodeSet]
     def nodes
+      terminology.document.root.xpath(xpath, terminology.namespaces)
+    end
+
+    ##
+    # Get the document values associated with the term (after e.g. accessors)
+    def values
       terminology.document.root.xpath(xpath, terminology.namespaces)
     end
 

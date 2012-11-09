@@ -94,9 +94,6 @@ module Nom::XML::Decorators::Terminology
 
     xpath = term.local_xpath
 
-    xpath += "[#{term.options[:if]}]" if term.options[:if] and term.options[:if].is_a? String
-    xpath += "[not(#{term.options[:unless]})]" if term.options[:unless] and term.options[:unless].is_a? String
-
     xpath += "[#{args.join('][')}]" unless args.empty?
 
     result = case self
