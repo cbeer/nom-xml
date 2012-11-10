@@ -9,6 +9,9 @@ module Nom::XML
       unless decorators(Nokogiri::XML::Node).include? Nom::XML::Decorators::Terminology
         decorators(Nokogiri::XML::Node) << Nom::XML::Decorators::Terminology
       end
+      unless decorators(Nokogiri::XML::Attr).include? Nom::XML::Decorators::Terminology
+        decorators(Nokogiri::XML::Attr) << Nom::XML::Decorators::Terminology
+      end
 
       unless decorators(Nokogiri::XML::NodeSet).include? Nom::XML::Decorators::NodeSet
         decorators(Nokogiri::XML::NodeSet) << Nom::XML::Decorators::NodeSet

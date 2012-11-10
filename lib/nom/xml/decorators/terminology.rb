@@ -35,22 +35,7 @@ module Nom::XML::Decorators::Terminology
   def terms
     @terms ||= self.ancestors.map { |p| p.term_accessors(self).map { |keys, values| values } }.flatten.compact.uniq
   end
-
-  def value_for_term term
-    m = term.options[:accessor]
-
-    case
-      when m.nil?
-        self
-      when m.is_a?(Symbol)
-        self.send(m)
-      when m.is_a?(Proc)
-        m.call(self)
-      else
-        raise "Unknown accessor class: #{m.class}"
-      end
-  end
-
+  
   protected
   ##
   # Collection of salient terminology accessors for this node

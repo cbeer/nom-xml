@@ -2,6 +2,21 @@ require 'spec_helper'
 
 describe Nom::XML do
 
+  it "shouldn't break under jruby" do
+    doc = Nokogiri::XML <<-eoxml
+      <root>
+        <a b="1">123</a>
+      </root>
+    eoxml
+
+    doc.set_terminology do |t|
+      t.b :path => '//@b', :accessor => lambda { |x| x.text }
+    end
+
+    doc.nom!
+
+    doc.b.should == "1"
+  end
   it "should do stuff with terminologies" do
     doc = Nokogiri::XML <<-eos
   <root>

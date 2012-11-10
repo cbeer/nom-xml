@@ -26,7 +26,6 @@ describe "Nutrition" do
          c.nested
        end
 
-       t.d :if => 'my-custom-function()'
      end
 
      xml.nom!
@@ -37,6 +36,7 @@ describe "Nutrition" do
   describe "#add_terminology_method_overrides!" do
 
     it "should warn you if you try to override already existing methods" do
+      pending if defined? JRUBY_VERSION
       mock_term = {:text => mock(:options => {})}
       document.a.first.stub(:term_accessors).and_return mock_term
       expect { document.a.first.add_terminology_method_overrides! }.to raise_error /Trying to redefine/
@@ -46,17 +46,6 @@ describe "Nutrition" do
       mock_term = {:text => mock(:options => { :override => true } )}
       document.a.first.stub(:term_accessors).and_return mock_term
       expect { document.a.first.add_terminology_method_overrides! }.to_not raise_error /Trying to redefine/
-    end
-  end
-
-  describe "#values_for_term" do
-    it "should call the method of the same name as a Symbol" do
-      mock_term = mock(:options => { :accessor => :text })
-      document.a.first.value_for_term(mock_term).should == '1234'
-    end
-    it "should evaluate a Proc" do
-      mock_term = mock(:options => { :accessor => lambda { |x| x.name } })
-      document.a.first.value_for_term(mock_term).should == 'a'
     end
   end
 

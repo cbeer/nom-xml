@@ -34,14 +34,13 @@ describe Nom::XML::Decorators::NodeSet do
     end
 
     it "should do a Proc accessor" do
-      t = mock(:options => { :accessor => lambda { |x| x.text }})
-      subject.xpath('//a').first.should_receive(:value_for_term).with(t).and_return(1)
+      t = mock(:options => { :accessor => lambda { |x| 1 }})
       subject.xpath('//a').values_for_term(t).should == [1]
     end
 
     it "should do a symbol accessor" do
       t = mock(:options => { :accessor => :z})
-      subject.xpath('//a').first.should_receive(:value_for_term).with(t).and_return(1)
+      subject.xpath('//a').first.should_receive(:z).and_return(1)
       subject.xpath('//a').values_for_term(t).should == [1]
     end
 

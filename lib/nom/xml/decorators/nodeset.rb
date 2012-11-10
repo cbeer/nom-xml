@@ -9,8 +9,10 @@ module Nom::XML::Decorators::NodeSet
       return_value = case
         when m.nil?
           result
-        when Symbol, Proc
-          result.collect { |r| r.value_for_term(term) }.compact
+        when m.is_a?(Symbol)
+           result.collect { |r| r.send(m) }.compact
+        when m.is_a?(Proc)
+          result.collect { |r| m.call(r) }.compact
         else
           raise "Unknown accessor class: #{m.class}"
         end
