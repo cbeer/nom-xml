@@ -64,7 +64,7 @@ module Nom::XML
     ##
     # Get the document values associated with the term (after e.g. accessors)
     def values
-      terminology.document.root.xpath(xpath, terminology.namespaces)
+      terminology.document.root.xpath(xpath, terminology.namespaces).value_for_term(self)
     end
 
     ##

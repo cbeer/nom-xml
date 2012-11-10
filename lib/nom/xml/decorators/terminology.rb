@@ -36,6 +36,21 @@ module Nom::XML::Decorators::Terminology
     @terms ||= self.ancestors.map { |p| p.term_accessors(self).map { |keys, values| values } }.flatten.compact.uniq
   end
 
+  def value_for_term term
+    m = term.options[:accessor]
+
+    case
+      when m.nil?
+        self
+      when m.is_a?(Symbol)
+        self.send(m)
+      when m.is_a?(Proc)
+        m.call(self)
+      else
+        raise "Unknown accessor class: #{m.class}"
+      end
+  end
+
   protected
   ##
   # Collection of salient terminology accessors for this node
@@ -103,26 +118,6 @@ module Nom::XML::Decorators::Terminology
                  self.xpath(xpath, self.document.terminology_namespaces)
                end
 
-    result = result.select &(term.options[:if]) if term.options[:if].is_a? Proc
-    result = result.reject &(term.options[:unless]) if term.options[:unless].is_a? Proc
-
-    m = term.options[:accessor]
-   
-    return_value = case
-      when m.nil?
-        result
-      when m.is_a?(Symbol)
-        result.collect { |r| r.send(m) }.compact
-      when m.is_a?(Proc)
-        result.collect { |r| m.call(r) }.compact
-      else
-        raise "Unknown accessor class: #{m.class}"
-      end
-
-    if return_value and (term.options[:single] or (result.length == 1 and result.first.is_a? Nokogiri::XML::Attr))
-      return return_value.first
-    end
-
-    return return_value
+    result.values_for_term(term)
   end
 end

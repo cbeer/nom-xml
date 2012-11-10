@@ -34,87 +34,30 @@ describe "Nutrition" do
      xml
   }
 
-  describe "#add_terminology_methods!" do
-    subject do
-      m = mock()
-      m.stub(:document).and_return(mock(:terminology_namespaces => {}))
-      m.stub(:term_accessors).and_return(@term_accessors)
-      m.extend Nom::XML::Decorators::Terminology
-      m
+  describe "#add_terminology_method_overrides!" do
+
+    it "should warn you if you try to override already existing methods" do
+      mock_term = {:text => mock(:options => {})}
+      document.a.first.stub(:term_accessors).and_return mock_term
+      expect { document.a.first.add_terminology_method_overrides! }.to raise_error /Trying to redefine/
     end
-
-    it "should define terminology accessors" do
-      mock_term = mock(:options => {})
-      @term_accessors = { :asdf => mock_term }
-
-      subject.should respond_to(:asdf)
+  
+    it "should let you override the warning" do
+      mock_term = {:text => mock(:options => { :override => true } )}
+      document.a.first.stub(:term_accessors).and_return mock_term
+      expect { document.a.first.add_terminology_method_overrides! }.to_not raise_error /Trying to redefine/
     end
+  end
 
-    it "should perform basic xpath queries" do
-      mock_term = mock(:local_xpath => '//asdf', :options => {})
-      @term_accessors = { :asdf => mock_term }
-
-      subject.should_receive(:xpath).with('//asdf', anything)
-
-      subject.asdf
+  describe "#values_for_term" do
+    it "should call the method of the same name as a Symbol" do
+      mock_term = mock(:options => { :accessor => :text })
+      document.a.first.value_for_term(mock_term).should == '1234'
     end
-
-    it "should perform xpath queries with constraints" do
-      mock_term = mock(:local_xpath => '//asdf', :options => {})
-      @term_accessors = { :asdf => mock_term }
-
-      subject.should_receive(:xpath).with('//asdf[predicate="value"]', anything)
-      subject.should_receive(:xpath).with('//asdf[predicate="\"value\""]', anything)
-      subject.should_receive(:xpath).with('//asdf[custom-xpath-predicate()]', anything)
-      subject.should_receive(:xpath).with('//asdf[custom-xpath-predicate()][predicate="value"]', anything)
-
-      subject.asdf(:predicate => 'value')
-      subject.asdf(:predicate => '"value"')
-      subject.asdf('custom-xpath-predicate()')
-      subject.asdf('custom-xpath-predicate()', :predicate => 'value')
+    it "should evaluate a Proc" do
+      mock_term = mock(:options => { :accessor => lambda { |x| x.name } })
+      document.a.first.value_for_term(mock_term).should == 'a'
     end
-
-    it "should execute accessors" do
-      mock_term = mock(:local_xpath => '//asdf', :options => {:accessor => :text })
-      @term_accessors = { :asdf => mock_term }
-
-      m = mock()
-      subject.should_receive(:xpath).with('//asdf', anything).and_return([m])
-      m.should_receive(:text)
-
-      subject.asdf
-    end 
-
-    it "should execute proc-based accessors" do
-      mock_term = mock(:local_xpath => '//asdf', :options => {:accessor => lambda { |x| x.zxcvb } })
-      @term_accessors = { :asdf => mock_term }
-
-      m = mock()
-      subject.should_receive(:xpath).with('//asdf', anything).and_return([m])
-      m.should_receive(:zxcvb)
-
-      subject.asdf
-    end
-
-    it "should raise an error on unknown accessors" do
-      mock_term = mock(:local_xpath => '//asdf', :options => {:accessor => 123 })
-      @term_accessors = { :asdf => mock_term }
-
-      subject.should_receive(:xpath).with('//asdf', anything)
-
-      expect { subject.asdf }.to raise_error
-    end
-
-    it "should convert single-valued objects to single values" do
-      mock_term = mock(:local_xpath => '//asdf', :options => {:single => true })
-      @term_accessors = { :asdf => mock_term }
-
-      subject.should_receive(:xpath).with('//asdf', anything).and_return([1])
-
-      subject.asdf.should == 1
-    end
-
-
   end
 
   describe "#terms" do
