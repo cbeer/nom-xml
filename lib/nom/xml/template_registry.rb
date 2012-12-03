@@ -52,59 +52,28 @@ class Nom::XML::TemplateRegistry
     return result
   end
 
-  # +instantiate+ a node and add it as a child of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return the new [Nokogiri::XML::Node]
-  def add_child(target_node, node_type, *args, &block)
-    attach_node(:add_child, target_node, :self, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a following sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return the new [Nokogiri::XML::Node]
-  def add_next_sibling(target_node, node_type, *args, &block)
-    attach_node(:add_next_sibling, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a preceding sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return the new [Nokogiri::XML::Node]
-  def add_previous_sibling(target_node, node_type, *args, &block)
-    attach_node(:add_previous_sibling, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a following sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return +target_node+
-  def after(target_node, node_type, *args, &block)
-    attach_node(:after, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a preceding sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return +target_node+
-  def before(target_node, node_type, *args, &block)
-    attach_node(:before, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node replace the [Nokogiri::XML::Node] specified by +target_node+ with it
-  # @return the new [Nokogiri::XML::Node]
-  def replace(target_node, node_type, *args, &block)
-    attach_node(:replace, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node replace the [Nokogiri::XML::Node] specified by +target_node+ with it
-  # @return +target_node+
-  def swap(target_node, node_type, *args, &block)
-    attach_node(:swap, target_node, :parent, node_type, *args, &block)
-  end
-  
-  def methods
-    super + @templates.keys.collect { |k| k.to_s }
-  end
-
-  def method_missing(sym,*args)
-    sym = sym.to_s.sub(/_$/,'').to_sym
-    if @templates.has_key?(sym)
+  ACTIONS = {
+   :add_child => :self, :add_next_sibling => :parent, :add_previous_sibling => :parent, 
+   :after => :parent, :before => :parent, :replace => :parent, :swap  => :parent
+  }
+  def method_missing(sym,*args,&block)
+    method = sym.to_s.sub(/_+$/,'').to_sym
+    if @templates.has_key?(method)
       instantiate(sym,*args)
+    elsif ACTIONS.has_key?(method)
+      target_node = args.shift
+      attach_node(method, target_node, ACTIONS[method], *args, &block)
+    elsif method.to_s =~ /^(#{ACTIONS.keys.join('|')})_(.+)$/
+      method = $1.to_sym
+      template = $2.to_sym
+      if ACTIONS.has_key?(method) and @templates.has_key?(template)
+        target_node = args.shift
+        attach_node(method, target_node, ACTIONS[method], template, *args, &block)
+      end
     else
       super(sym,*args)
     end
+
   end
 
   private
