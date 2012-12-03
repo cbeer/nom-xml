@@ -41,10 +41,4 @@ describe "Template Registry example" do
     subject.root.add_child(subject.template(:a, 'asdf'))
     subject.a.should have(2).items
   end
-
-  it "should still work" do
-    pending if defined? JRUBY_VERSION
-    subject.root.add_child(subject.template(:a, 'asdf'))
-    subject.a.should have(2).items
-”  end
 end
