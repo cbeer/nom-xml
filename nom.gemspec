@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ["Chris Beer", "Michael B. Klein"]
   s.email = %q{cabeer@stanford.edu mbklein@gmail.com}
-  s.homepage = %q{http://github.com/cbeer/nom}
+  s.homepage = %q{http://github.com/cbeer/nom-xml}
   s.summary = %q{ asdf }
   s.description = %q{ asdfgh }
 
