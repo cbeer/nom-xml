@@ -5,6 +5,7 @@ end
 
 require 'rspec/autorun'
 require 'nom'
+require 'equivalent-xml/rspec_matchers'
 
 RSpec.configure do |config|
 

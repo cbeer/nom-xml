@@ -20,7 +20,11 @@ module Nom::XML::Decorators::Terminology
 
       self.send(method, *args, &block)
     else
-      super
+      begin
+        self.document.template_registry.send(method, self, *args, &block)
+      rescue NameError
+        super
+      end
     end
   end
 
