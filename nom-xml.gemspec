@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors = ["Chris Beer", "Michael B. Klein"]
   s.email = %q{cabeer@stanford.edu mbklein@gmail.com}
   s.homepage = %q{http://github.com/cbeer/nom-xml}
-  s.summary = %q{ asdf }
-  s.description = %q{ asdfgh }
+  s.summary = %q{ A library to help you tame sprawling XML schemas. }
+  s.description = %q{ NOM allows you to define a “terminology” to ease translation between XML and ruby objects }
 
   s.add_dependency 'activesupport'
   s.add_dependency 'i18n'
