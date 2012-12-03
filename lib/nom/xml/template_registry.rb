@@ -44,11 +44,13 @@ class Nom::XML::TemplateRegistry
   def instantiate(node_type, *args)
     result = create_detached_node(nil, node_type, *args)
     # Strip namespaces from text and CDATA nodes. Stupid Nokogiri.
-    result.traverse { |node|
-      if node.is_a?(Nokogiri::XML::CharacterData)
-        node.namespace = nil
+      unless jruby?
+        result.traverse { |node|
+          if node.is_a?(Nokogiri::XML::CharacterData)
+            node.namespace = nil
+          end
+        }
       end
-    }
     return result
   end
 
@@ -78,6 +80,10 @@ class Nom::XML::TemplateRegistry
 
   private
   
+  def jruby?
+    defined?(RUBY_ENGINE) and (RUBY_ENGINE == 'jruby')
+  end
+
   # Create a new Nokogiri::XML::Node based on the template for +node_type+
   #
   # @param [Nokogiri::XML::Node] builder_node The node to use as starting point for building the node using Nokogiri::XML::Builder.with(builder_node).  This provides namespace info, etc for constructing the new Node object. If nil, defaults to {Nom::XML::TemplateRegistry#empty_root_node}.  This is just used to create the new node and will not be included in the response.
@@ -113,11 +119,13 @@ class Nom::XML::TemplateRegistry
     new_node = create_detached_node(builder_node, node_type, *args)
     result = target_node.send(method, new_node)
     # Strip namespaces from text and CDATA nodes. Stupid Nokogiri.
-    new_node.traverse { |node|
-      if node.is_a?(Nokogiri::XML::CharacterData)
-        node.namespace = nil
-      end
-    }
+    unless jruby?
+      new_node.traverse { |node|
+        if node.is_a?(Nokogiri::XML::CharacterData)
+          node.namespace = nil
+        end
+      }
+    end
     if block_given?
       yield result
     else
