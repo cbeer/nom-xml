@@ -33,7 +33,11 @@ module Nom::XML::Decorators::NodeSet
 			result = self.collect { |node| node.send(sym, *args, &block) }.flatten
 			self.class.new(self.document, result) rescue result
 		else
-			super
+      begin
+        self.document.template_registry.send(sym, self, *args, &block)
+      rescue NameError
+        super
+      end
 		end
 	end
 

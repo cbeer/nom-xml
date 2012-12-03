@@ -44,71 +44,46 @@ class Nom::XML::TemplateRegistry
   def instantiate(node_type, *args)
     result = create_detached_node(nil, node_type, *args)
     # Strip namespaces from text and CDATA nodes. Stupid Nokogiri.
-    result.traverse { |node|
-      if node.is_a?(Nokogiri::XML::CharacterData)
-        node.namespace = nil
+      unless jruby?
+        result.traverse { |node|
+          if node.is_a?(Nokogiri::XML::CharacterData)
+            node.namespace = nil
+          end
+        }
       end
-    }
     return result
   end
 
-  # +instantiate+ a node and add it as a child of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return the new [Nokogiri::XML::Node]
-  def add_child(target_node, node_type, *args, &block)
-    attach_node(:add_child, target_node, :self, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a following sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return the new [Nokogiri::XML::Node]
-  def add_next_sibling(target_node, node_type, *args, &block)
-    attach_node(:add_next_sibling, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a preceding sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return the new [Nokogiri::XML::Node]
-  def add_previous_sibling(target_node, node_type, *args, &block)
-    attach_node(:add_previous_sibling, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a following sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return +target_node+
-  def after(target_node, node_type, *args, &block)
-    attach_node(:after, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node and add it as a preceding sibling of the [Nokogiri::XML::Node] specified by +target_node+
-  # @return +target_node+
-  def before(target_node, node_type, *args, &block)
-    attach_node(:before, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node replace the [Nokogiri::XML::Node] specified by +target_node+ with it
-  # @return the new [Nokogiri::XML::Node]
-  def replace(target_node, node_type, *args, &block)
-    attach_node(:replace, target_node, :parent, node_type, *args, &block)
-  end
-
-  # +instantiate+ a node replace the [Nokogiri::XML::Node] specified by +target_node+ with it
-  # @return +target_node+
-  def swap(target_node, node_type, *args, &block)
-    attach_node(:swap, target_node, :parent, node_type, *args, &block)
-  end
-  
-  def methods
-    super + @templates.keys.collect { |k| k.to_s }
-  end
-
-  def method_missing(sym,*args)
-    sym = sym.to_s.sub(/_$/,'').to_sym
-    if @templates.has_key?(sym)
+  ACTIONS = {
+   :add_child => :self, :add_next_sibling => :parent, :add_previous_sibling => :parent, 
+   :after => :parent, :before => :parent, :replace => :parent, :swap  => :parent
+  }
+  def method_missing(sym,*args,&block)
+    method = sym.to_s.sub(/_+$/,'').to_sym
+    if @templates.has_key?(method)
       instantiate(sym,*args)
+    elsif ACTIONS.has_key?(method)
+      target_node = args.shift
+      attach_node(method, target_node, ACTIONS[method], *args, &block)
+    elsif method.to_s =~ /^(#{ACTIONS.keys.join('|')})_(.+)$/
+      method = $1.to_sym
+      template = $2.to_sym
+      if ACTIONS.has_key?(method) and @templates.has_key?(template)
+        target_node = args.shift
+        attach_node(method, target_node, ACTIONS[method], template, *args, &block)
+      end
     else
       super(sym,*args)
     end
+
   end
 
   private
   
+  def jruby?
+    defined?(RUBY_ENGINE) and (RUBY_ENGINE == 'jruby')
+  end
+
   # Create a new Nokogiri::XML::Node based on the template for +node_type+
   #
   # @param [Nokogiri::XML::Node] builder_node The node to use as starting point for building the node using Nokogiri::XML::Builder.with(builder_node).  This provides namespace info, etc for constructing the new Node object. If nil, defaults to {Nom::XML::TemplateRegistry#empty_root_node}.  This is just used to create the new node and will not be included in the response.
@@ -144,11 +119,13 @@ class Nom::XML::TemplateRegistry
     new_node = create_detached_node(builder_node, node_type, *args)
     result = target_node.send(method, new_node)
     # Strip namespaces from text and CDATA nodes. Stupid Nokogiri.
-    new_node.traverse { |node|
-      if node.is_a?(Nokogiri::XML::CharacterData)
-        node.namespace = nil
-      end
-    }
+    unless jruby?
+      new_node.traverse { |node|
+        if node.is_a?(Nokogiri::XML::CharacterData)
+          node.namespace = nil
+        end
+      }
+    end
     if block_given?
       yield result
     else
