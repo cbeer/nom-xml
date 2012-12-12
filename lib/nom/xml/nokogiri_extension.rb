@@ -6,19 +6,14 @@ module Nom::XML
     ##
     # Apply NOM decorators to Nokogiri classes
     def nom!
-      unless decorators(Nokogiri::XML::Node).include? Nom::XML::Decorators::Terminology
-        decorators(Nokogiri::XML::Node) << Nom::XML::Decorators::Terminology
-      end
-      unless decorators(Nokogiri::XML::Attr).include? Nom::XML::Decorators::Terminology
-        decorators(Nokogiri::XML::Attr) << Nom::XML::Decorators::Terminology
-      end
-
-      unless decorators(Nokogiri::XML::NodeSet).include? Nom::XML::Decorators::NodeSet
-        decorators(Nokogiri::XML::NodeSet) << Nom::XML::Decorators::NodeSet
-      end
-
-      unless decorators(Nokogiri::XML::Document).include? Nom::XML::Decorators::TemplateRegistry
-        decorators(Nokogiri::XML::Document) << Nom::XML::Decorators::TemplateRegistry
+      decorations = {
+        Nokogiri::XML::Node => Nom::XML::Decorators::Terminology,
+        Nokogiri::XML::Attr => Nom::XML::Decorators::Terminology,
+        Nokogiri::XML::NodeSet => Nom::XML::Decorators::NodeSet,
+        Nokogiri::XML::Document => Nom::XML::Decorators::TemplateRegistry
+      }
+      decorations.each_pair do |host, decorator|
+        decorators(host) << decorator unless decorators(host).include? decorator
       end
 
       decorate!
