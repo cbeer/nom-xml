@@ -16,10 +16,11 @@ Gem::Specification.new do |s|
   s.add_dependency 'i18n'
   s.add_dependency 'nokogiri'
 
-  s.add_development_dependency "rspec"
+  s.add_development_dependency 'equivalent-xml', '~> 0.5.1'
+  s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency "rake"
   s.add_development_dependency "yard"
-  s.add_development_dependency "equivalent-xml"
+
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
