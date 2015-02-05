@@ -3,7 +3,7 @@ if ENV['COVERAGE'] and RUBY_VERSION =~ /^1.9/
   SimpleCov.start
 end
 
-require 'rspec/autorun'
+require 'rspec'
 require 'nom'
 require 'equivalent-xml/rspec_matchers'
 
