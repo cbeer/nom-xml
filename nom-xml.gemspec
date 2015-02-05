@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary = %q{ A library to help you tame sprawling XML schemas. }
   s.description = %q{ NOM allows you to define a “terminology” to ease translation between XML and ruby objects }
 
-  s.add_dependency 'activesupport'
+  s.add_dependency 'activesupport', '>= 3.2.18'  # could be rails/AS 3 or 4+, but we don't support old insecure versions
   s.add_dependency 'i18n'
   s.add_dependency 'nokogiri'
 
