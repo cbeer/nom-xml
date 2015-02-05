@@ -33,33 +33,33 @@ describe "Nutrition" do
   }
 
   it "should be able to access things via xpath, and then continue with terminology selectors" do
-    subject.xpath('//food').first._name.text.should == "Avocado Dip"
+    expect(subject.xpath('//food').first._name.text).to eq("Avocado Dip")
   end
 
   it "should have total fat information" do
-    subject.daily_values.total_fat.text.should == "65"
-    subject.daily_values.total_fat.value.should include(65)
-    subject.daily_values.total_fat.units.text.should =='g'
+    expect(subject.daily_values.total_fat.text).to eq("65")
+    expect(subject.daily_values.total_fat.value).to include(65)
+    expect(subject.daily_values.total_fat.units.text).to eq('g')
 
-    subject.foods.total_fat.value.inject(:+).should == 117
+    expect(subject.foods.total_fat.value.inject(:+)).to eq(117)
   end
 
   it "should have food names" do
-    subject.foods._name.text.should include("Avocado Dip")
+    expect(subject.foods._name.text).to include("Avocado Dip")
   end
 
   it "should have xpath selectors" do
-    subject.foods(:name => 'Avocado Dip').total_fat.value.first.should == 11
-    subject.foods('total-fat/text() = 11')._name.text.should == "Avocado Dip"
+    expect(subject.foods(:name => 'Avocado Dip').total_fat.value.first).to eq(11)
+    expect(subject.foods('total-fat/text() = 11')._name.text).to eq("Avocado Dip")
   end
 
   it "should have global terms" do
-    subject.daily_values.total_fat.unit_value.should include('65g')
-    subject.foods.first.at('serving').unit_value.should include('29g')
+    expect(subject.daily_values.total_fat.unit_value).to include('65g')
+    expect(subject.foods.first.at('serving').unit_value).to include('29g')
   end
 
   it "should accept if in proc-form" do
     subject.daily_values.total_fat.units_if == subject.daily_values.total_fat.units
-    subject.daily_values.total_fat.units_if_false.should be_empty
+    expect(subject.daily_values.total_fat.units_if_false).to be_empty
   end
 end
