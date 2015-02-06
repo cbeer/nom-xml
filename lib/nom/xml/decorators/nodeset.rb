@@ -41,7 +41,8 @@ module Nom::XML::Decorators::NodeSet
 		end
 	end
 
-	def respond_to? sym
+    # ruby 2.0 sends two arguments to respond_to?
+	def respond_to? sym, priv = false
       if self.all? { |node| node.respond_to? sym }
       	true
       else

@@ -54,6 +54,8 @@ describe Nom::XML::Decorators::NodeSet do
   describe "method missing and respond to" do
     it "should respond to methods on nodes if all nodes in the nodeset respond to the method" do
       expect(subject.xpath('//*')).to respond_to :text
+      expect(subject.xpath('//*').respond_to?(:text, true)).to be_truthy
+      expect(subject.xpath('//*').respond_to?(:text, false)).to be_truthy
     end
 
     it "should respond to methods on nodes if all nodes in the nodeset respond to the method" do
