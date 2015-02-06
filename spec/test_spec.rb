@@ -15,7 +15,7 @@ describe Nom::XML do
 
     doc.nom!
 
-    doc.b.should == "1"
+    expect(doc.b).to eq("1")
   end
   it "should do stuff with terminologies" do
     doc = Nokogiri::XML <<-eos
@@ -59,14 +59,14 @@ describe Nom::XML do
 
     doc.nom!
 
-    doc.root.element_a.text.should == 'a value'
-    doc.root.element_b.element_c.text.should == 'c value'
-    doc.root.element_d.element_e.element_f.text.strip.should == 'f value'
-    doc.root.element_d.element_e.foo.collect(&:text).should == ['bar']
-    doc.root.element_d.element_e.foo_text.should == ['bar']
-    doc.root.element_g.first.element_h.should == ['h value 1','h value 2']
-    doc.root.element_g.element_h.should == ['h value 1','h value 2','h value 3']
-    doc.root.element_g.whatever.should == ['element_h:h value 1','element_h:h value 2','element_h:h value 3']
+    expect(doc.root.element_a.text).to eq('a value')
+    expect(doc.root.element_b.element_c.text).to eq('c value')
+    expect(doc.root.element_d.element_e.element_f.text.strip).to eq('f value')
+    expect(doc.root.element_d.element_e.foo.collect(&:text)).to eq(['bar'])
+    expect(doc.root.element_d.element_e.foo_text).to eq(['bar'])
+    expect(doc.root.element_g.first.element_h).to eq(['h value 1','h value 2'])
+    expect(doc.root.element_g.element_h).to eq(['h value 1','h value 2','h value 3'])
+    expect(doc.root.element_g.whatever).to eq(['element_h:h value 1','element_h:h value 2','element_h:h value 3'])
   end
 end
 

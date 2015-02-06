@@ -25,10 +25,10 @@ describe "Namespaces example" do
   }
 
   it "should get nodes" do
-    subject.table.tr.td.map { |x| x.text }.should include("Apples", "Bananas")
+    expect(subject.table.tr.td.map { |x| x.text }).to include("Apples", "Bananas")
   end
 
   it "should get nodes from the other namespace" do
-    subject.furniture_table._name.text.should include("African Coffee Table")
+    expect(subject.furniture_table._name.text).to include("African Coffee Table")
   end
 end

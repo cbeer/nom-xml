@@ -21,9 +21,9 @@ describe Nom::XML::NokogiriExtension do
     it "should decorate Nodes and Nodesets with our decorators" do
       doc.nom!
 
-      doc.root.should be_a_kind_of(Nom::XML::Decorators::Terminology)
+      expect(doc.root).to be_a_kind_of(Nom::XML::Decorators::Terminology)
 
-      doc.xpath('//*').should be_a_kind_of(Nom::XML::Decorators::NodeSet)
+      expect(doc.xpath('//*')).to be_a_kind_of(Nom::XML::Decorators::NodeSet)
     end
   end
 end

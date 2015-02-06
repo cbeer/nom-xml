@@ -37,15 +37,15 @@ describe "Nutrition" do
 
     it "should warn you if you try to override already existing methods" do
       pending if defined? JRUBY_VERSION
-      mock_term = {:text => mock(:options => {})}
-      document.a.first.stub(:term_accessors).and_return mock_term
+      mock_term = {:text => double(:options => {})}
+      allow(document.a.first).to receive(:term_accessors).and_return mock_term
       expect { document.a.first.add_terminology_method_overrides! }.to raise_error /Trying to redefine/
     end
   
     it "should let you override the warning" do
-      mock_term = {:text => mock(:options => { :override => true } )}
-      document.a.first.stub(:term_accessors).and_return mock_term
-      expect { document.a.first.add_terminology_method_overrides! }.to_not raise_error /Trying to redefine/
+      mock_term = {:text => double(:options => { :override => true } )}
+      allow(document.a.first).to receive(:term_accessors).and_return mock_term
+      expect { document.a.first.add_terminology_method_overrides! }.to_not raise_error
     end
   end
 
@@ -55,7 +55,7 @@ describe "Nutrition" do
       subject { document.root }
 
       it "should not have any associated terminology terms" do
-        subject.terms.should be_empty
+        expect(subject.terms).to be_empty
       end
 
     end
@@ -64,11 +64,11 @@ describe "Nutrition" do
       subject { document.xpath('//a').first }
 
       it "should have a single term" do
-        subject.terms.should have(1).item
+        expect(subject.terms.size).to eq(1)
       end
 
       it "should find the right term" do
-        subject.terms.map { |x| x.name }.should include(:a)
+        expect(subject.terms.map { |x| x.name }).to include(:a)
       end
     end
 
@@ -76,11 +76,11 @@ describe "Nutrition" do
       subject { document.xpath('//b').first }
 
       it "should have multiple terms" do
-        subject.terms.should have(2).items
+        expect(subject.terms.size).to eq(2)
       end
 
       it "should find the right terms" do
-        subject.terms.map { |x| x.name }.should include(:b, :b_ref)
+        expect(subject.terms.map { |x| x.name }).to include(:b, :b_ref)
       end
     end
   end
@@ -91,7 +91,7 @@ describe "Nutrition" do
       subject { document.xpath('//c').first }
 
       it "should have a child accessor" do
-        subject.send(:term_accessors).keys.should include(:nested)
+        expect(subject.send(:term_accessors).keys).to include(:nested)
       end
     end
 
@@ -99,7 +99,7 @@ describe "Nutrition" do
       subject { document }
 
       it "should have all the root terms" do
-        subject.send(:term_accessors).keys.should include(:a, :b, :c)
+        expect(subject.send(:term_accessors).keys).to include(:a, :b, :c)
       end
     end
 
@@ -107,7 +107,7 @@ describe "Nutrition" do
       subject { document.root }
 
       it "should have all the root terms" do
-        subject.send(:term_accessors).keys.should include(:a, :b, :c)
+        expect(subject.send(:term_accessors).keys).to include(:a, :b, :c)
       end
     end
   end

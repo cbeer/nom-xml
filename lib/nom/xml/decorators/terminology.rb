@@ -30,7 +30,10 @@ module Nom::XML::Decorators::Terminology
 
   alias_method :respond_to_without_terms?, :respond_to?
 
-  def respond_to? method
+# As of ruby 2.0, respond_to includes an optional 2nd arg:
+#   a boolean controlling whether private methods are targeted.
+# We don't actually care for term accessors (none private).
+  def respond_to? method, private = false
     super || self.term_accessors[method.to_sym]
   end
 
@@ -39,7 +42,7 @@ module Nom::XML::Decorators::Terminology
   def terms
     @terms ||= self.ancestors.map { |p| p.term_accessors(self).map { |keys, values| values } }.flatten.compact.uniq
   end
-  
+
   protected
   ##
   # Collection of salient terminology accessors for this node
