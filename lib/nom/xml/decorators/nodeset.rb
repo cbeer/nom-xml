@@ -1,6 +1,6 @@
 module Nom::XML::Decorators::NodeSet
-	
-	def values_for_term term
+
+  def values_for_term term
       result = self
       result = result.select &(term.options[:if]) if term.options[:if].is_a? Proc
       result = result.reject &(term.options[:unless]) if term.options[:unless].is_a? Proc
@@ -22,31 +22,31 @@ module Nom::XML::Decorators::NodeSet
       end
 
       return return_value
-	end
+  end
 
-	##
-	# Add a #method_missing handler to NodeSets. If all of the elements in the Nodeset
-	# respond to a method (e.g. if it is a term accessor), call that method on all the
-	# elements in the node
-	def method_missing sym, *args, &block
-		if self.all? { |node| node.respond_to? sym }
-			result = self.collect { |node| node.send(sym, *args, &block) }.flatten
-			self.class.new(self.document, result) rescue result
-		else
+  ##
+  # Add a #method_missing handler to NodeSets. If all of the elements in the Nodeset
+  # respond to a method (e.g. if it is a term accessor), call that method on all the
+  # elements in the node
+  def method_missing sym, *args, &block
+    if self.all? { |node| node.respond_to? sym }
+      result = self.collect { |node| node.send(sym, *args, &block) }.flatten
+      self.class.new(self.document, result) rescue result
+    else
       begin
         self.document.template_registry.send(sym, self, *args, &block)
       rescue NameError
         super
       end
-		end
-	end
+    end
+  end
 
     # ruby 2.0 sends two arguments to respond_to?
-	def respond_to? sym, priv = false
+  def respond_to? sym, priv = false
       if self.all? { |node| node.respond_to? sym }
-      	true
+        true
       else
-      	super
+        super
       end
-	end
+  end
 end
