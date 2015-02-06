@@ -29,7 +29,6 @@ describe "Nutrition" do
      end
 
      xml.nom!
-
      xml
   }
 
@@ -43,6 +42,7 @@ describe "Nutrition" do
     end
   
     it "should let you override the warning" do
+      pending if defined? JRUBY_VERSION
       mock_term = {:text => double(:options => { :override => true } )}
       allow(document.a.first).to receive(:term_accessors).and_return mock_term
       expect { document.a.first.add_terminology_method_overrides! }.to_not raise_error
@@ -57,7 +57,6 @@ describe "Nutrition" do
       it "should not have any associated terminology terms" do
         expect(subject.terms).to be_empty
       end
-
     end
 
     context "node with a single term" do
@@ -111,7 +110,6 @@ describe "Nutrition" do
       end
     end
   end
-
 
 end
 
