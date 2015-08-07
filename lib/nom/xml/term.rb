@@ -6,6 +6,8 @@ module Nom::XML
     attr_writer :parent
     attr_reader :options
 
+    PATH_SEPARATOR = '/'
+
     ##
     # Create a new Nom::XML::Term
     #
@@ -25,7 +27,7 @@ module Nom::XML
     end
 
     def full_name
-      [parent.full_name, "term:#{name}"].join("/")
+      @full_name ||= [parent.full_name, "term:#{name}"].join(PATH_SEPARATOR)
     end
 
     ##
@@ -39,17 +41,21 @@ module Nom::XML
     # Get the absolute xpath to this node
     # @return [String]
     def xpath
-      [parent_xpath, local_xpath].flatten.compact.join("/")
+      @xpath ||= [parent_xpath, local_xpath].flatten.compact.join(PATH_SEPARATOR)
     end
 
     ##
     # Get the relative xpath to this node from its immediate parent's term
     # @return [String]
     def local_xpath
-      xpath = ("#{xmlns}:" unless xmlns.blank? ).to_s + (options[:path] || name).to_s
-
-      xpath += "[#{options[:if]}]" if options[:if] and options[:if].is_a? String
-      xpath += "[not(#{options[:unless]})]" if options[:unless] and options[:unless].is_a? String
+      xpath = if xmlns.blank?
+        ""
+      else
+        xmlns + ":"
+      end
+      xpath << "#{options[:path] || name}"
+      xpath << "[#{options[:if]}]" if options[:if] and options[:if].is_a? String
+      xpath << "[not(#{options[:unless]})]" if options[:unless] and options[:unless].is_a? String
 
       xpath
     end
