@@ -28,12 +28,14 @@ module Nom::XML::Decorators::Terminology
     end
   end
 
-  alias_method :respond_to_without_terms?, :respond_to?
+  def respond_to_without_terms?(method, regular = true)
+    methods(regular).include?(method)
+  end
 
 # As of ruby 2.0, respond_to includes an optional 2nd arg:
 #   a boolean controlling whether private methods are targeted.
 # We don't actually care for term accessors (none private).
-  def respond_to? method, private = false
+  def respond_to_missing? method, private = false
     super || self.term_accessors[method.to_sym]
   end
 

@@ -88,7 +88,7 @@ module Nom::XML
       [self, terms.map { |k,v| v.flatten }].flatten
     end
 
-    def respond_to? method, *args, &block
+    def respond_to_missing? method, *args, &block
       if in_edit_context?
         true
       elsif key? method
