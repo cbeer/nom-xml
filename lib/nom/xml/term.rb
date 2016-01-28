@@ -64,13 +64,27 @@ module Nom::XML
     # Get the document nodes associated with this term
     # @return [Nokogiri::XML::NodeSet]
     def nodes
-      terminology.document.root.xpath(xpath, terminology.namespaces)
+      if root
+        root.xpath(xpath, terminology.namespaces)
+      else
+        puts self
+        puts parent
+        puts xpath
+        puts terminology
+        puts terminology.document
+        puts terminology.document.root
+        []
+      end
     end
 
     ##
     # Get the document values associated with the term (after e.g. accessors)
     def values
-      terminology.document.root.xpath(xpath, terminology.namespaces).values_for_term(self)
+      root.xpath(xpath, terminology.namespaces).values_for_term(self)
+    end
+
+    def root
+      terminology.document.root
     end
 
     ##
