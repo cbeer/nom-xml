@@ -5,4 +5,7 @@ gemfile:
   - gemfiles/rails4.gemfile
 
 rvm:
-  - 2.1.2
+  - 2.2.4
+
+sudo: false
+language: ruby
