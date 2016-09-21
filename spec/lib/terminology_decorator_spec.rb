@@ -32,23 +32,6 @@ describe "Nutrition" do
      xml
   }
 
-  describe "#add_terminology_method_overrides!" do
-
-    it "should warn you if you try to override already existing methods" do
-      pending if defined? JRUBY_VERSION
-      mock_term = {:text => double(:options => {})}
-      allow(document.a.first).to receive(:term_accessors).and_return mock_term
-      expect { document.a.first.add_terminology_method_overrides! }.to raise_error /Trying to redefine/
-    end
-  
-    it "should let you override the warning" do
-      pending if defined? JRUBY_VERSION
-      mock_term = {:text => double(:options => { :override => true } )}
-      allow(document.a.first).to receive(:term_accessors).and_return mock_term
-      expect { document.a.first.add_terminology_method_overrides! }.to_not raise_error
-    end
-  end
-
   describe "#terms" do
 
     context "root element" do

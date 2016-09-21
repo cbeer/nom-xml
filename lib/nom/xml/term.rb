@@ -16,6 +16,10 @@ module Nom::XML
     # @attr [Hash] options
     # @yield 
     def initialize parent, name, options = {}, *args, &block
+      if Nokogiri::XML::Node.instance_methods.include?(name.to_sym)
+        raise "Unable to redefine method #{name} on Nokogiri::XML::Node"
+      end
+
       @name = name
       @terms = {}
       @parent = parent

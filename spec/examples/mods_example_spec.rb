@@ -13,7 +13,7 @@ describe "Namespaces example" do
 
       t.author :path => '//mods:name' do |n|
         n.authorityURI :path => '@authorityURI', :accessor => lambda { |e| e.text }
-        n.description :path => 'mods:description', :override => true
+        n.mods_description :path => 'mods:description'
         n.valueURI :path => '@valueURI'
         n.namePart :path => 'mods:namePart', :single => true, :index_as => [:type_1]
       end
@@ -38,10 +38,6 @@ describe "Namespaces example" do
      xml.nom!
      xml
   }
-
-  it "should work with existing reserved method names when override is present" do
-    expect(subject.author.first.description.text).to include('asdf')
-  end
 
   it "should return nodesets by default" do
     expect(subject.personal_authors).to be_a_kind_of(Nokogiri::XML::NodeSet)

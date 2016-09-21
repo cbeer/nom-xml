@@ -1,19 +1,4 @@
 module Nom::XML::Decorators::Terminology
-
-  def self.extended node
-    node.add_terminology_method_overrides!
-  end
-
-  def add_terminology_method_overrides!
-    self.term_accessors.each do |k, term|
-      if self.respond_to_without_terms? k and not term.options[:override]
-        raise "Trying to redefine method #{k} on #{self.to_s}"
-      end
-    end.select { |k, term| term.options[:override] }.each do |method, term|
-       define_term_method(method, self.term_accessors[method.to_sym])
-    end
-  end
-
   def method_missing method, *args, &block
     if self.term_accessors[method.to_sym]
       define_term_method(method, self.term_accessors[method.to_sym])
