@@ -31,7 +31,12 @@ module Nom::XML::Decorators::NodeSet
   def method_missing sym, *args, &block
     if self.all? { |node| node.respond_to? sym }
       result = self.collect { |node| node.send(sym, *args, &block) }.flatten
-      self.class.new(self.document, result) rescue result
+      nodeset = self.class.new(self.document, result) rescue result
+
+      # hack around some lazy initialization in the jruby version of Nokogiri
+      # https://github.com/sparklemotion/nokogiri/issues/1782
+      nodeset | self.class.new(self.document) if defined?(JRUBY_VERSION) && result.empty?
+      nodeset
     else
       begin
         self.document.template_registry.send(sym, self, *args, &block)
