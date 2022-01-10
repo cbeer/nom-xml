@@ -1,7 +1,0 @@
-notifications:
-  email: false
-
-rvm:
-  - 2.4.4
-  - 2.5.1
-  - jruby-9.2.0.0

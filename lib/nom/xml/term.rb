@@ -52,7 +52,7 @@ module Nom::XML
     # Get the relative xpath to this node from its immediate parent's term
     # @return [String]
     def local_xpath
-      xpath = if xmlns.blank?
+      xpath = if xmlns.nil? || xmlns.empty?
         ""
       else
         xmlns + ":"

@@ -1,5 +1,3 @@
-require 'active_support/core_ext/array'
-
 module Nom::XML
   module NokogiriExtension
 
@@ -24,7 +22,7 @@ module Nom::XML
     # Set the terminology accessors for this document
     def set_terminology options = {}, &block
       @terminology = Nom::XML::Terminology.new(self, options, &block)
-      
+
       self
     end
 
