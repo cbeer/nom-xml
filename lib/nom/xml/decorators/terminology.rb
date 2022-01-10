@@ -82,9 +82,7 @@ module Nom::XML::Decorators::Terminology
   end
 
   def lookup_term term, *args
-    options = args.extract_options!
-
-    args += options.map { |key, value| %{#{key}="#{value.gsub(/"/, '\\\"') }"} }
+    args = extract_term_options(*args)
 
     xpath = term.local_xpath
 
@@ -98,5 +96,15 @@ module Nom::XML::Decorators::Terminology
                end
 
     result.values_for_term(term)
+  end
+
+  def extract_term_options(*args)
+    if args.last.is_a? Hash
+      h = args.pop
+
+      args + h.map { |key, value| %(#{key}="#{value.gsub(/"/, '\\\"')}") }
+    else
+      args
+    end
   end
 end

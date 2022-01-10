@@ -1,6 +1,3 @@
-require 'active_support'
-require 'active_support/core_ext/array'
-
 module Nom::XML
   module NokogiriExtension
 
