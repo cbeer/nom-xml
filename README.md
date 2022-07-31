@@ -10,8 +10,6 @@ Some Handy Links
 Here are some resources to help you learn more about nom-xml:
 
 - [API](http://rubydoc.info/github/cbeer/nom-xml) - A reference to nom-xml's classes
-- [#projecthydra](http://webchat.freenode.net/?channels=#projecthydra) on irc.freenode.net
-- [Project Hydra Google Group](http://groups.google.com/group/hydra-tech) - community mailing list and forum
 
 An Example
 ---------------
