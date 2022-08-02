@@ -1,7 +1,5 @@
 # nom-xml
 
-[![Build Status](https://secure.travis-ci.org/cbeer/nom.png)](http://travis-ci.org/cbeer/nom)
-
 A library to help you tame sprawling XML schemas.
 
 nom-xml allows you to define a “terminology” to ease translation between XML and ruby objects – you can query the xml for Nodes or node values without ever writing a line of XPath. nom-xml is built on top of [nokogiri](http://nokogiri.org) decorators, which means you can mix-and-match NOM accessors with nokogiri xpaths, xml manipulation, and traversing and it will just work.
@@ -12,8 +10,6 @@ Some Handy Links
 Here are some resources to help you learn more about nom-xml:
 
 - [API](http://rubydoc.info/github/cbeer/nom-xml) - A reference to nom-xml's classes
-- [#projecthydra](http://webchat.freenode.net/?channels=#projecthydra) on irc.freenode.net
-- [Project Hydra Google Group](http://groups.google.com/group/hydra-tech) - community mailing list and forum
 
 An Example
 ---------------
@@ -71,6 +67,3 @@ doc.nom!
 doc.name.text == 'Avocado Dip'
 doc.minerals.calcium.text == '0'
 ```
-
-
-

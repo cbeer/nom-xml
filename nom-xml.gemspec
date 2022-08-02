@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'i18n'
   s.add_dependency 'nokogiri'
 
-  s.add_development_dependency 'equivalent-xml', '~> 0.5.1'
+  s.add_development_dependency 'equivalent-xml', '~> 0.5'
   s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency "rake"
   s.add_development_dependency "yard"
